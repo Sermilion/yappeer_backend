@@ -1,12 +1,11 @@
 package com.sermilion.domain.onboarding.datasource
 
-import com.sermilion.data.onboarding.db.model.result.SQLResult
+import com.sermilion.data.onboarding.db.model.result.SqlResult
 
 interface UserCredentialsDataSource {
     fun createUser(
         username: String,
         email: String,
-        salt: String,
         hashedPassword: String,
-    ): SQLResult
+    ): SqlResult
 }

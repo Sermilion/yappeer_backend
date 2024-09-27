@@ -1,7 +1,7 @@
 package com.sermilion.data.onboarding.db.model.result
 
-sealed interface SQLResult {
-    data object Success: SQLResult
-    data object ConstraintViolation: SQLResult
-    data object UnknownError: SQLResult
+sealed interface SqlResult {
+    data object Success : SqlResult
+    data object ConstraintViolation : SqlResult
+    data object UnknownError : SqlResult
 }

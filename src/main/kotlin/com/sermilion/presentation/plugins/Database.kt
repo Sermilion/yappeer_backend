@@ -1,10 +1,8 @@
 package com.sermilion.presentation.plugins
 
-import io.ktor.server.application.*
-import org.jetbrains.exposed.sql.Database
-import java.sql.Connection
-import java.sql.DriverManager
+import io.ktor.server.application.Application
 import org.h2.util.SortedProperties.loadProperties
+import org.jetbrains.exposed.sql.Database
 
 fun Application.configureDatabases() {
     val properties = loadProperties("local.properties") // Load properties from the file

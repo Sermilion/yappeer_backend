@@ -1,24 +1,16 @@
 package com.sermilion.domain.onboarding.repository
 
+import com.sermilion.domain.onboarding.model.registration.Email
+import com.sermilion.domain.onboarding.model.registration.Password
+import com.sermilion.domain.onboarding.model.registration.Username
+import com.sermilion.domain.onboarding.repository.model.RegistrationResult
+
 interface OnboardingRepository {
 
     suspend fun register(
-        username: String,
-        password: String,
-        repeatPassword: String,
-        email: String,
+        username: Username,
+        password: Password,
+        repeatPassword: Password,
+        email: Email,
     ): RegistrationResult
-
-    sealed interface RegistrationResult {
-        data class Error(val type: RegistrationType): RegistrationResult
-        data object Success: RegistrationResult
-    }
-
-    enum class RegistrationType {
-        PasswordMatch,
-        UsernameOrEmailTaken,
-        DatabaseIssue,
-        UnknownError,
-    }
-
 }

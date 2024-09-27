@@ -1,61 +1,61 @@
 package com.sermilion.data.onboarding.repository
 
-import com.sermilion.data.onboarding.db.model.result.SQLResult
+import com.sermilion.data.onboarding.db.model.result.SqlResult
+import com.sermilion.domain.onboarding.SecurityService
 import com.sermilion.domain.onboarding.datasource.UserCredentialsDataSource
+import com.sermilion.domain.onboarding.model.registration.Email
+import com.sermilion.domain.onboarding.model.registration.Password
+import com.sermilion.domain.onboarding.model.registration.Username
 import com.sermilion.domain.onboarding.repository.OnboardingRepository
-import com.sermilion.domain.onboarding.repository.OnboardingRepository.RegistrationResult
-import com.sermilion.domain.onboarding.repository.OnboardingRepository.RegistrationType
-import java.security.SecureRandom
-import java.util.Base64
-import org.apache.commons.codec.digest.DigestUtils
+import com.sermilion.domain.onboarding.repository.model.RegistrationResult
+import com.sermilion.domain.onboarding.repository.model.RegistrationResult.RegistrationErrorType
+import com.sermilion.domain.onboarding.repository.model.RegistrationResult.RegistrationErrorType.UnknownError
+import com.sermilion.domain.onboarding.repository.model.RegistrationResult.RegistrationErrorType.UsernameOrEmailTaken
 import org.slf4j.LoggerFactory
 
 class OilaOnboardingRepository(
-    private val dataSource: UserCredentialsDataSource
+    private val dataSource: UserCredentialsDataSource,
+    private val securityService: SecurityService,
 ) : OnboardingRepository {
 
     private val logger = LoggerFactory.getLogger(OilaOnboardingRepository::class.java)
 
+    @Suppress("ReturnCount")
     override suspend fun register(
-        username: String,
-        password: String,
-        repeatPassword: String,
-        email: String,
+        username: Username,
+        password: Password,
+        repeatPassword: Password,
+        email: Email,
     ): RegistrationResult {
         if (password != repeatPassword) {
-            return RegistrationResult.Error(RegistrationType.PasswordMatch)
+            return RegistrationResult.Error(RegistrationErrorType.PasswordMatch)
+        }
+
+        val validationErrors = listOf(
+            username to RegistrationErrorType.ValidationType.Username,
+            password to RegistrationErrorType.ValidationType.Password,
+            email to RegistrationErrorType.ValidationType.Email,
+        ).filter { (model, _) -> !model.validate() }.map { (_, errorType) -> errorType }
+
+        if (validationErrors.isNotEmpty()) {
+            return RegistrationResult.Error(RegistrationErrorType.Validation(validationErrors))
         }
 
         return try {
-            val salt = generateSalt()
-            val hashedPassword = hashPassword(password, salt)
             val result = dataSource.createUser(
-                username = username,
-                email = email,
-                salt = salt,
-                hashedPassword = hashedPassword,
+                username = username.value,
+                email = email.value,
+                hashedPassword = securityService.hashPassword(password.value),
             )
 
             when (result) {
-                SQLResult.ConstraintViolation -> RegistrationResult.Error(RegistrationType.UsernameOrEmailTaken)
-                SQLResult.Success -> RegistrationResult.Success
-                SQLResult.UnknownError -> RegistrationResult.Error(RegistrationType.UnknownError)
+                SqlResult.ConstraintViolation -> RegistrationResult.Error(UsernameOrEmailTaken)
+                SqlResult.Success -> RegistrationResult.Success
+                SqlResult.UnknownError -> RegistrationResult.Error(UnknownError)
             }
-        } catch (e: Exception) {
+        } catch (e: IllegalStateException) {
             logger.error("Unknown error during registration", e)
-            RegistrationResult.Error(RegistrationType.UnknownError)
+            RegistrationResult.Error(UnknownError)
         }
-    }
-
-    private fun generateSalt(): String {
-        val random = SecureRandom()
-        val salt = ByteArray(16)
-        random.nextBytes(salt)
-        return Base64.getEncoder().encodeToString(salt)
-    }
-
-    private fun hashPassword(password: String, salt: String): String {
-        val saltedPassword = password + salt
-        return DigestUtils.sha256Hex(saltedPassword)
     }
 }

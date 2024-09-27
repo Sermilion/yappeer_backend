@@ -1,5 +1,5 @@
 [versions]
-kotlin.code.style="official"
+detekt = "1.23.6"
 ktor_version="3.0.0-rc-1"
 kotlin_version="2.0.20"
 koin_version= "3.4.3"
@@ -7,6 +7,7 @@ logback_version="1.5.8"
 postgres_version="42.7.2"
 h2_version="2.2.224"
 exposedVersion="0.54.0"
+spotless = "6.21.0"
 
 [libraries]
 jetbrains-exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao", version.ref = "exposedVersion" }
@@ -42,3 +43,5 @@ logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "l
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktor_version" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin_version" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
