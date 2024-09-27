@@ -1,0 +1,44 @@
+[versions]
+kotlin.code.style="official"
+ktor_version="3.0.0-rc-1"
+kotlin_version="2.0.20"
+koin_version= "3.4.3"
+logback_version="1.5.8"
+postgres_version="42.7.2"
+h2_version="2.2.224"
+exposedVersion="0.54.0"
+
+[libraries]
+jetbrains-exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao", version.ref = "exposedVersion" }
+jetbrains-exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposedVersion" }
+jetbrains-kotlin-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin_version" }
+jetbrains-kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.7.1" }
+jetbrains-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.4.0"}
+
+commons-codec = { group = "commons-codec", name = "commons-codec", version = "1.13" }
+
+jsonpath = { group = "com.jayway.jsonpath", name = "json-path", version = "2.9.0" }
+
+h2 = { group = "com.h2database", name = "h2", version.ref = "h2_version" }
+
+koin-ktor = { group = "io.insert-koin", name = "koin-ktor", version.ref = "koin_version" }
+
+ktor-client-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor_version" }
+ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json-jvm", version.ref = "ktor_version" }
+ktor-server-calllogging = { group = "io.ktor", name = "ktor-server-call-logging-jvm", version.ref = "ktor_version" }
+ktor-server-contentnegotiation = { group = "io.ktor", name = "ktor-server-content-negotiation-jvm", version.ref = "ktor_version" }
+ktor-server-core = { group = "io.ktor", name = "ktor-server-core-jvm", version.ref = "ktor_version" }
+ktor-server-hostcommon = { group = "io.ktor", name = "ktor-server-host-common-jvm", version.ref = "ktor_version" }
+ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty-jvm", version.ref = "ktor_version" }
+ktor-server-resources = { group = "io.ktor", name = "ktor-server-resources", version.ref = "ktor_version" }
+ktor-server-statuspage = { group = "io.ktor", name = "ktor-server-status-pages", version.ref = "ktor_version" }
+ktor-server-testhost = { group = "io.ktor", name = "ktor-server-test-host", version.ref = "ktor_version" }
+ktor-server-testhotsjvm = { group = "io.ktor", name = "ktor-server-test-host-jvm" }
+
+postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgres_version" }
+
+logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback_version" }
+
+[plugins]
+ktor = { id = "io.ktor.plugin", version.ref = "ktor_version" }
+jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin_version" }
