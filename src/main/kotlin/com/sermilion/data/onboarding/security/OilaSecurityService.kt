@@ -1,6 +1,6 @@
-package com.sermilion.data.onboarding
+package com.sermilion.data.onboarding.security
 
-import com.sermilion.domain.onboarding.SecurityService
+import com.sermilion.domain.onboarding.security.SecurityService
 import de.mkammerer.argon2.Argon2Factory
 
 class OilaSecurityService : SecurityService {

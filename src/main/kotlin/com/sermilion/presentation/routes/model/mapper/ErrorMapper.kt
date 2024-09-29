@@ -1,7 +1,7 @@
 package com.sermilion.presentation.routes.model.mapper
 
-import com.sermilion.domain.onboarding.repository.model.RegistrationResult.RegistrationErrorType.ValidationType
-import com.sermilion.presentation.routes.model.ErrorDetail
+import com.sermilion.domain.onboarding.model.registration.result.RegistrationResult.RegistrationErrorType.ValidationType
+import com.sermilion.presentation.routes.model.response.ErrorDetail
 
 fun List<ValidationType>.toPresentationModel(): List<ErrorDetail> {
     return this.map {

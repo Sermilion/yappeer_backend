@@ -24,6 +24,7 @@ fun Application.configureRouting() {
     install(Koin) {
         modules(appModule)
     }
+
     routing {
         post(RegistrationRoute) {
             registrationRoute(call)

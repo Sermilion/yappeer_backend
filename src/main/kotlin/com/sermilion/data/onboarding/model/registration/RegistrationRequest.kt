@@ -1,4 +1,4 @@
-package com.sermilion.data.onboarding.registration.model
+package com.sermilion.data.onboarding.model1.registration
 
 data class RegistrationRequest(
     val username: String,

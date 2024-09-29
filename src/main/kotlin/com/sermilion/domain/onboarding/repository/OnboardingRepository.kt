@@ -1,9 +1,9 @@
 package com.sermilion.domain.onboarding.repository
 
-import com.sermilion.domain.onboarding.model.registration.Email
-import com.sermilion.domain.onboarding.model.registration.Password
-import com.sermilion.domain.onboarding.model.registration.Username
-import com.sermilion.domain.onboarding.repository.model.RegistrationResult
+import com.sermilion.domain.onboarding.model.registration.value.Email
+import com.sermilion.domain.onboarding.model.registration.value.Password
+import com.sermilion.domain.onboarding.model.registration.value.Username
+import com.sermilion.domain.onboarding.model.registration.result.RegistrationResult
 
 interface OnboardingRepository {
 

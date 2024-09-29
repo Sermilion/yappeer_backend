@@ -1,8 +1,10 @@
-package com.sermilion.domain.onboarding.repository.model
+package com.sermilion.domain.onboarding.model.registration.result
+
+import com.sermilion.presentation.routes.model.response.UserResponse
 
 sealed interface RegistrationResult {
     data class Error(val errorType: RegistrationErrorType) : RegistrationResult
-    data object Success : RegistrationResult
+    data class Success(val user: UserResponse) : RegistrationResult
 
     sealed interface RegistrationErrorType {
         data object PasswordMatch : RegistrationErrorType

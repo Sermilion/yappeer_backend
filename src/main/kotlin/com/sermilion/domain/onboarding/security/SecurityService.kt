@@ -1,4 +1,4 @@
-package com.sermilion.domain.onboarding
+package com.sermilion.domain.onboarding.security
 
 interface SecurityService {
     fun hashPassword(password: String): String

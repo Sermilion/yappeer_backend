@@ -1,16 +1,17 @@
 package com.sermilion.data.onboarding.repository
 
 import com.sermilion.data.onboarding.db.model.result.SqlResult
-import com.sermilion.domain.onboarding.SecurityService
+import com.sermilion.domain.onboarding.security.SecurityService
 import com.sermilion.domain.onboarding.datasource.UserCredentialsDataSource
-import com.sermilion.domain.onboarding.model.registration.Email
-import com.sermilion.domain.onboarding.model.registration.Password
-import com.sermilion.domain.onboarding.model.registration.Username
+import com.sermilion.domain.onboarding.model.registration.value.Email
+import com.sermilion.domain.onboarding.model.registration.value.Password
+import com.sermilion.domain.onboarding.model.registration.value.Username
 import com.sermilion.domain.onboarding.repository.OnboardingRepository
-import com.sermilion.domain.onboarding.repository.model.RegistrationResult
-import com.sermilion.domain.onboarding.repository.model.RegistrationResult.RegistrationErrorType
-import com.sermilion.domain.onboarding.repository.model.RegistrationResult.RegistrationErrorType.UnknownError
-import com.sermilion.domain.onboarding.repository.model.RegistrationResult.RegistrationErrorType.UsernameOrEmailTaken
+import com.sermilion.domain.onboarding.model.registration.result.RegistrationResult
+import com.sermilion.domain.onboarding.model.registration.result.RegistrationResult.RegistrationErrorType
+import com.sermilion.domain.onboarding.model.registration.result.RegistrationResult.RegistrationErrorType.UnknownError
+import com.sermilion.domain.onboarding.model.registration.result.RegistrationResult.RegistrationErrorType.UsernameOrEmailTaken
+import com.sermilion.presentation.routes.model.response.UserResponse
 import org.slf4j.LoggerFactory
 
 class OilaOnboardingRepository(
@@ -50,7 +51,14 @@ class OilaOnboardingRepository(
 
             when (result) {
                 SqlResult.ConstraintViolation -> RegistrationResult.Error(UsernameOrEmailTaken)
-                SqlResult.Success -> RegistrationResult.Success
+                is SqlResult.Success -> {
+                    val user = UserResponse(
+                        id = result.user.id,
+                        username = result.user.username,
+                        email = result.user.email,
+                    )
+                    RegistrationResult.Success(user)
+                }
                 SqlResult.UnknownError -> RegistrationResult.Error(UnknownError)
             }
         } catch (e: IllegalStateException) {

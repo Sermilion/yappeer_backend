@@ -1,14 +1,12 @@
 package com.sermilion.presentation.routes
 
-import com.sermilion.domain.onboarding.model.registration.Email
-import com.sermilion.domain.onboarding.model.registration.Password
-import com.sermilion.domain.onboarding.model.registration.Username
 import com.sermilion.domain.onboarding.repository.OnboardingRepository
-import com.sermilion.domain.onboarding.repository.model.RegistrationResult
-import com.sermilion.presentation.routes.model.ErrorResponse
+import com.sermilion.domain.onboarding.model.registration.result.RegistrationResult
+import com.sermilion.domain.onboarding.model.registration.result.RegistrationResult.RegistrationErrorType
+import com.sermilion.presentation.routes.model.response.ErrorResponse
+import com.sermilion.presentation.routes.model.param.RegisterParams
 import com.sermilion.presentation.routes.model.mapper.toPresentationModel
 import io.ktor.http.HttpStatusCode
-import io.ktor.resources.Resource
 import io.ktor.serialization.JsonConvertException
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -25,7 +23,7 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
 
     val logger = LoggerFactory.getLogger(RegistrationRoute::class.java)
 
-    val request = call.receive<Register>()
+    val request = call.receive<RegisterParams>()
     try {
         val result = onboardingRepository.register(
             username = request.usernameValue,
@@ -35,18 +33,18 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
         )
 
         when (result) {
-            is RegistrationResult.Success -> call.respond(HttpStatusCode.Created)
+            is RegistrationResult.Success -> call.respond(HttpStatusCode.Created, result.user)
 
             is RegistrationResult.Error -> {
                 when (result.errorType) {
-                    RegistrationResult.RegistrationErrorType.PasswordMatch -> {
+                    RegistrationErrorType.PasswordMatch -> {
                         call.respond(HttpStatusCode.BadRequest, "Passwords do not match.")
                     }
 
-                    RegistrationResult.RegistrationErrorType.UsernameOrEmailTaken -> {
+                    RegistrationErrorType.UsernameOrEmailTaken -> {
                         call.respond(HttpStatusCode.Conflict, "Username or email already taken.")
                     }
-                    is RegistrationResult.RegistrationErrorType.Validation -> {
+                    is RegistrationErrorType.Validation -> {
                         val validationErrors = result.errorType.validationErrors.toPresentationModel()
                         val response = ErrorResponse(
                             code = ErrorTypeValidation,
@@ -70,15 +68,3 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
     }
 }
 
-@Resource("register")
-class Register(
-    val username: String,
-    val password: String,
-    val repeatPassword: String,
-    val email: String,
-) {
-    val usernameValue get() = Username(username)
-    val passwordValue get() = Password(password)
-    val repeatPasswordValue get() = Password(repeatPassword)
-    val emailValue get() = Email(email)
-}

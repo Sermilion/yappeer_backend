@@ -1,4 +1,4 @@
-package com.sermilion.presentation.routes.model
+package com.sermilion.presentation.routes.model.response
 
 import kotlinx.serialization.Serializable
 

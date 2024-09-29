@@ -1,6 +1,5 @@
-package com.sermilion.domain.onboarding.model.registration
+package com.sermilion.domain.onboarding.model.registration.value
 
-import com.sermilion.domain.onboarding.model.Validateable
 import java.util.regex.Pattern
 
 @JvmInline

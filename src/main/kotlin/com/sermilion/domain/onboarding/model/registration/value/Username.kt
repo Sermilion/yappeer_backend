@@ -1,6 +1,4 @@
-package com.sermilion.domain.onboarding.model.registration
-
-import com.sermilion.domain.onboarding.model.Validateable
+package com.sermilion.domain.onboarding.model.registration.value
 
 @JvmInline
 value class Username(val value: String) : Validateable {
