@@ -1,6 +1,6 @@
-package com.sermilion.data.onboarding.model1.registration
+package com.sermilion.data.onboarding.model.registration
 
-data class RegistrationRequest(
+data class RegistrationRequestDataModel(
     val username: String,
     val password: String,
     val repeatPassword: String,
