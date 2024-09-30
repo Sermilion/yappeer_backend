@@ -94,6 +94,8 @@ dependencies {
     add("detektPlugins", "com.twitter.compose.rules:detekt:0.0.26")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
     implementation("de.mkammerer:argon2-jvm:2.1")
+    implementation("io.ktor:ktor-server-auth:3.0.0-rc-1")
+    implementation("io.ktor:ktor-server-auth-jwt:3.0.0-rc-1")
 
     testImplementation(libs.jetbrains.kotlin.junit)
     testImplementation(libs.ktor.client.contentnegotiation)

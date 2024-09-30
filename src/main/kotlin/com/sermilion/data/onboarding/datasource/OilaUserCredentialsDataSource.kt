@@ -2,12 +2,15 @@ package com.sermilion.data.onboarding.datasource
 
 import com.sermilion.data.onboarding.db.SqlErrorCodes
 import com.sermilion.data.onboarding.db.model.UserCredentialsDAO
-import com.sermilion.data.onboarding.db.model.result.SqlResult
-import com.sermilion.data.onboarding.model1.registration.UserResultDataModel
+import com.sermilion.data.onboarding.db.model.UserCredentialsTable
+import com.sermilion.data.onboarding.db.model.result.SqlRegistrationResult
+import com.sermilion.data.onboarding.model.registration.UserResultDataModel
 import com.sermilion.domain.onboarding.datasource.UserCredentialsDataSource
+import com.sermilion.domain.onboarding.model.value.Password
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.jetbrains.exposed.exceptions.ExposedSQLException
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.postgresql.util.PSQLException
 import org.slf4j.LoggerFactory
@@ -20,7 +23,7 @@ class OilaUserCredentialsDataSource : UserCredentialsDataSource {
         username: String,
         email: String,
         hashedPassword: String,
-    ): SqlResult {
+    ): SqlRegistrationResult {
         return try {
             transaction {
                 val result = UserCredentialsDAO.new {
@@ -37,22 +40,35 @@ class OilaUserCredentialsDataSource : UserCredentialsDataSource {
                     email = result.email,
                 )
 
-                SqlResult.Success(user)
+                SqlRegistrationResult.Success(user)
             }
         } catch (e: ExposedSQLException) {
             when (val cause = e.cause?.cause) {
                 is PSQLException -> {
                     when (cause.sqlState) {
-                        SqlErrorCodes.UNIQUE_CONSTRAINT_VIOLATION -> SqlResult.ConstraintViolation
-                        else -> SqlResult.UnknownError
+                        SqlErrorCodes.UNIQUE_CONSTRAINT_VIOLATION -> SqlRegistrationResult.ConstraintViolation
+                        else -> SqlRegistrationResult.UnknownError
                     }
                 }
 
-                else -> SqlResult.UnknownError
+                else -> SqlRegistrationResult.UnknownError
             }
-        } catch (e: IllegalStateException) {
-            logger.error("Unknown while creating user in database", e)
-            SqlResult.UnknownError
         }
+    }
+
+    override fun findPassword(username: String): Password? {
+        val result = try {
+            transaction {
+                UserCredentialsTable.selectAll().where {
+                    (UserCredentialsTable.username eq username)
+                }.firstOrNull()?.let {
+                    UserCredentialsDAO.wrapRow(it)
+                }
+            }?.passwordHash
+        } catch (e: ExposedSQLException) {
+            logger.info("Exception while finding password for username: `$username`", e)
+            null
+        }
+        return result?.let { Password(it) }
     }
 }
