@@ -1,13 +1,18 @@
-package com.sermilion.domain.onboarding.model.registration.result
-
-import com.sermilion.presentation.routes.model.response.RegistrationResponseModel
+package com.sermilion.domain.onboarding.model.result
 
 sealed interface RegistrationResult {
     data class Error(val errorType: RegistrationErrorType) : RegistrationResult
-    data class Success(val user: RegistrationResponseModel) : RegistrationResult
+    data class Success(val user: Data) : RegistrationResult
 
     sealed interface RegistrationErrorType {
         data object UsernameOrEmailTaken : RegistrationErrorType
         data object UnknownError : RegistrationErrorType
     }
+
+    data class Data(
+        val id: String,
+        val username: String,
+        val email: String,
+        val avatar: String?,
+    )
 }

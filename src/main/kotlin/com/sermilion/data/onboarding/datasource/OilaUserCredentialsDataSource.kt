@@ -1,16 +1,16 @@
 package com.sermilion.data.onboarding.datasource
 
+import com.sermilion.data.exposed.ExposedQueryUtil.selectRow
 import com.sermilion.data.onboarding.db.SqlErrorCodes
 import com.sermilion.data.onboarding.db.model.UserCredentialsDAO
 import com.sermilion.data.onboarding.db.model.UserCredentialsTable
 import com.sermilion.data.onboarding.db.model.result.SqlRegistrationResult
-import com.sermilion.data.onboarding.model.registration.UserResultDataModel
+import com.sermilion.data.onboarding.model.UserDataModel
 import com.sermilion.domain.onboarding.datasource.UserCredentialsDataSource
 import com.sermilion.domain.onboarding.model.value.Password
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
 import org.jetbrains.exposed.exceptions.ExposedSQLException
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.postgresql.util.PSQLException
 import org.slf4j.LoggerFactory
@@ -35,8 +35,8 @@ class OilaUserCredentialsDataSource : UserCredentialsDataSource {
                     this.avatar = null
                 }
 
-                val user = UserResultDataModel(
-                    id = result.id.toString(),
+                val user = UserDataModel(
+                    id = result.id.value,
                     username = result.username,
                     email = result.email,
                     avatar = result.avatar,
@@ -60,17 +60,28 @@ class OilaUserCredentialsDataSource : UserCredentialsDataSource {
 
     override fun findPassword(username: String): Password? {
         val result = try {
-            transaction {
-                UserCredentialsTable.selectAll().where {
-                    (UserCredentialsTable.username eq username)
-                }.firstOrNull()?.let {
-                    UserCredentialsDAO.wrapRow(it)
-                }
-            }?.passwordHash
+            selectRow { UserCredentialsTable.username eq username }?.passwordHash
         } catch (e: ExposedSQLException) {
             logger.info("Exception while finding password for username: `$username`", e)
             null
         }
         return result?.let { Password(it) }
+    }
+
+    override fun findUser(username: String): UserDataModel? {
+        val result = try {
+            selectRow { UserCredentialsTable.username eq username }
+        } catch (e: ExposedSQLException) {
+            logger.info("Exception while finding user for username: `$username`", e)
+            null
+        }
+        return result?.let {
+            UserDataModel(
+                id = result.id.value,
+                username = result.username,
+                email = result.email,
+                avatar = result.avatar,
+            )
+        }
     }
 }

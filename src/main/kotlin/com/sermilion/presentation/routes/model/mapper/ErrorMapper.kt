@@ -1,7 +1,7 @@
 package com.sermilion.presentation.routes.model.mapper
 
+import com.sermilion.domain.onboarding.model.result.ErrorDetail
 import com.sermilion.domain.onboarding.model.value.ValueType
-import com.sermilion.presentation.routes.model.response.ErrorDetail
 
 fun List<ValueType>.toPresentationModel(): List<ErrorDetail> {
     return this.map {

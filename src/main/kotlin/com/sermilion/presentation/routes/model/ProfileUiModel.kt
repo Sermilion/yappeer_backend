@@ -1,9 +1,9 @@
-package com.sermilion.presentation.routes.model.response
+package com.sermilion.presentation.routes.model
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RegistrationResponseModel(
+data class ProfileUiModel(
     val id: String,
     val username: String,
     val email: String,
