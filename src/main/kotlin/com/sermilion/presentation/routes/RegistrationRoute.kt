@@ -1,13 +1,14 @@
 package com.sermilion.presentation.routes
 
-import com.sermilion.domain.onboarding.model.registration.result.RegistrationResult
-import com.sermilion.domain.onboarding.model.registration.result.RegistrationResult.RegistrationErrorType.UsernameOrEmailTaken
+import com.sermilion.domain.onboarding.model.result.ErrorResponse
+import com.sermilion.domain.onboarding.model.result.RegistrationResult
+import com.sermilion.domain.onboarding.model.result.RegistrationResult.RegistrationErrorType.UsernameOrEmailTaken
 import com.sermilion.domain.onboarding.model.value.ValueValidationException
 import com.sermilion.domain.onboarding.repository.OnboardingRepository
 import com.sermilion.domain.onboarding.security.SecurityService
+import com.sermilion.presentation.routes.model.RegistrationUiModel
 import com.sermilion.presentation.routes.model.mapper.toPresentationModel
 import com.sermilion.presentation.routes.model.param.RegisterParams
-import com.sermilion.presentation.routes.model.response.ErrorResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -44,7 +45,15 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
         )
 
         when (result) {
-            is RegistrationResult.Success -> call.respond(HttpStatusCode.Created, result.user)
+            is RegistrationResult.Success -> {
+                val regResult = RegistrationUiModel(
+                    id = result.user.id,
+                    username = result.user.username,
+                    email = result.user.email,
+                    avatar = result.user.avatar,
+                )
+                call.respond(HttpStatusCode.Created, regResult)
+            }
             is RegistrationResult.Error -> {
                 when (result.errorType) {
                     UsernameOrEmailTaken -> call.respond(

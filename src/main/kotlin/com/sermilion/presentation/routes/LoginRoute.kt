@@ -1,11 +1,11 @@
 package com.sermilion.presentation.routes
 
+import com.sermilion.domain.onboarding.model.result.ErrorResponse
 import com.sermilion.domain.onboarding.model.value.ValueValidationException
 import com.sermilion.domain.onboarding.repository.OnboardingRepository
 import com.sermilion.domain.onboarding.security.SecurityService
+import com.sermilion.presentation.routes.model.LoginUiModel
 import com.sermilion.presentation.routes.model.param.LoginParams
-import com.sermilion.presentation.routes.model.response.ErrorResponse
-import com.sermilion.presentation.routes.model.response.LoginResponseModel
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -33,7 +33,7 @@ suspend fun Route.loginRoute(call: RoutingCall) {
         if (passwordMatches) {
             val accessToken = securityService.generateAccessToken(username = params.usernameValue)
             val refreshToken = securityService.generateRefreshToken(params.usernameValue)
-            val response = LoginResponseModel(accessToken = accessToken, refreshToken = refreshToken)
+            val response = LoginUiModel(accessToken = accessToken, refreshToken = refreshToken)
             call.respond(HttpStatusCode.OK, response)
         } else {
             call.respond(HttpStatusCode.BadRequest, createInvalidCredentialsError())
