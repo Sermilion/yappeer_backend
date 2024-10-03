@@ -1,0 +1,49 @@
+name: Ktor CI Pipeline
+on:
+  push:
+    branches:
+      - 'feat/RDN-**'
+      - 'fix/RDN-**'
+      - 'chore/RDN-**'
+      - 'main'
+      - 'renovate/**'
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - 'feat/RDN-**'
+      - 'fix/RDN-**'
+      - 'chore/RDN-**'
+      - 'renovate/**'
+
+jobs:
+  BuildKtorApp:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@6a0805fcefea3d4657a47ac4c165951e33482018 # v4.2.2
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@d9c87d481d55275bb5441eef3fe0e46805f9ef70 # v3.5.0
+        with:
+          build-scan-publish: true
+          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-use-agree: "yes"
+        
+      - name: Build Ktor application
+        run: ./gradlew assemble
+        
+      - name: Run Linters and Test
+        run: ./gradlew check
+
+      - name: Upload Reports
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+        with:
+          name: Test-Reports
+          path: app/build/reports
+          retention-days: 1
+        if: always()
