@@ -6,7 +6,7 @@ koin_version= "4.0.0"
 logback_version="1.5.8"
 postgres_version="42.7.4"
 h2_version="2.3.232"
-exposedVersion="0.54.0"
+exposedVersion="0.55.0"
 spotless = "6.21.0"
 
 [libraries]
