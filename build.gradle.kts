@@ -93,7 +93,7 @@ dependencies {
     implementation(libs.commons.codec)
     add("detektPlugins", "com.twitter.compose.rules:detekt:0.0.26")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-    implementation("de.mkammerer:argon2-jvm:2.1")
+    implementation("de.mkammerer:argon2-jvm:2.11")
     implementation("io.ktor:ktor-server-auth:3.0.0-rc-2")
     implementation("io.ktor:ktor-server-auth-jwt:3.0.0-rc-2")
     implementation("org.jetbrains.exposed:exposed-java-time:0.54.0")
