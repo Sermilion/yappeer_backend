@@ -34,7 +34,7 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
         if (password != repeatPassword) {
             call.respond(
                 HttpStatusCode.BadRequest,
-                ErrorResponse(code = ErrorTypePasswordMatch, details = emptyList<Unit>()),
+                ErrorResponse(code = ErrorTypePasswordMatch, details = emptyList()),
             )
         }
 

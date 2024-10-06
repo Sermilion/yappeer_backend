@@ -45,7 +45,7 @@ suspend fun Route.loginRoute(call: RoutingCall) {
     }
 }
 
-private fun createInvalidCredentialsError(): ErrorResponse<List<ErrorDetail>> {
+private fun createInvalidCredentialsError(): ErrorResponse {
     return ErrorResponse(
         code = ErrorTypeInvalidCredentials,
         details = emptyList(),

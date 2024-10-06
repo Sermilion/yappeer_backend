@@ -3,9 +3,9 @@ package com.sermilion.domain.onboarding.model.result
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ErrorResponse<T>(
+data class ErrorResponse(
     val code: String,
-    val details: T,
+    val details: List<ErrorDetail>,
 )
 
 @Serializable
