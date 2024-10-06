@@ -1,10 +1,11 @@
-package com.sermilion.presentation.routes
+package com.sermilion.presentation.routes.feature.onboarding
 
+import com.sermilion.domain.onboarding.model.result.ErrorDetail
 import com.sermilion.domain.onboarding.model.result.ErrorResponse
 import com.sermilion.domain.onboarding.model.value.ValueValidationException
 import com.sermilion.domain.onboarding.repository.OnboardingRepository
-import com.sermilion.domain.onboarding.security.SecurityService
-import com.sermilion.presentation.routes.model.LoginUiModel
+import com.sermilion.domain.onboarding.security.UserAuthenticationService
+import com.sermilion.presentation.routes.model.TokenUiModel
 import com.sermilion.presentation.routes.model.param.LoginParams
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
@@ -19,7 +20,7 @@ private const val ErrorTypeInvalidCredentials = "InvalidCredentials"
 
 suspend fun Route.loginRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()
-    val securityService: SecurityService by inject()
+    val userAuthenticationService: UserAuthenticationService by inject()
 
     val logger = LoggerFactory.getLogger(LoginRoute)
     val params = call.receive<LoginParams>()
@@ -29,11 +30,11 @@ suspend fun Route.loginRoute(call: RoutingCall) {
             .findPassword(params.usernameValue)
             ?: return call.respond(HttpStatusCode.BadRequest, createInvalidCredentialsError())
 
-        val passwordMatches = securityService.verifyPassword(params.passwordValue, passwordHash)
+        val passwordMatches = userAuthenticationService.verifyPassword(params.passwordValue, passwordHash)
         if (passwordMatches) {
-            val accessToken = securityService.generateAccessToken(username = params.usernameValue)
-            val refreshToken = securityService.generateRefreshToken(params.usernameValue)
-            val response = LoginUiModel(accessToken = accessToken, refreshToken = refreshToken)
+            val accessToken = userAuthenticationService.generateAccessToken(username = params.usernameValue)
+            val refreshToken = userAuthenticationService.generateRefreshToken(params.usernameValue)
+            val response = TokenUiModel(accessToken = accessToken, refreshToken = refreshToken)
             call.respond(HttpStatusCode.OK, response)
         } else {
             call.respond(HttpStatusCode.BadRequest, createInvalidCredentialsError())
@@ -44,7 +45,7 @@ suspend fun Route.loginRoute(call: RoutingCall) {
     }
 }
 
-private fun createInvalidCredentialsError(): ErrorResponse {
+private fun createInvalidCredentialsError(): ErrorResponse<List<ErrorDetail>> {
     return ErrorResponse(
         code = ErrorTypeInvalidCredentials,
         details = emptyList(),

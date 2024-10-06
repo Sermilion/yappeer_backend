@@ -4,7 +4,7 @@ package com.sermilion.domain.onboarding.model.value
 value class Username(val value: String) {
     init {
         if (value.isEmpty() || value.length < MIN_USERNAME_LENGTH) {
-            throw ValueValidationException(ValueType.Username)
+            throw ValueValidationException(Username::class.simpleName.orEmpty())
         }
     }
 

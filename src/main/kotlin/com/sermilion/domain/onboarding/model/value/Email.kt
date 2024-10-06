@@ -6,7 +6,7 @@ value class Email(val value: String) {
     init {
         val emailIsValid = value.isNotEmpty() && value.matches(Regex(pattern = EMAIL_PATTERN))
         if (!emailIsValid) {
-            throw ValueValidationException(ValueType.Email)
+            throw ValueValidationException(Email::class.simpleName.orEmpty())
         }
     }
 
