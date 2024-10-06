@@ -1,4 +1,4 @@
-package com.sermilion.presentation.routes
+package com.sermilion.presentation.routes.feature.onboarding
 
 import com.sermilion.domain.onboarding.model.value.Username
 import com.sermilion.domain.onboarding.model.value.ValueValidationException

@@ -10,6 +10,7 @@ import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.response.respond
 import org.h2.util.SortedProperties.loadProperties
+import java.util.Date
 
 const val AuthenticationIdentifier = "auth-jwt"
 
@@ -18,14 +19,12 @@ fun Application.configureAuthentication() {
         jwt(AuthenticationIdentifier) {
             val properties = loadProperties("local.properties")
             val secret = properties.getProperty("jwt.secret")
-            verifier(
-                JWT
-                    .require(Algorithm.HMAC256(secret))
-                    .build(),
-            )
 
+            verifier(JWT.require(Algorithm.HMAC256(secret)).build())
             validate { credential ->
-                if (credential.payload.getClaim("username").asString() != "") {
+                if (credential.payload.getClaim("username").asString() != "" &&
+                    !credential.payload.getClaim("exp").asDate().before(Date()) // Check expiration
+                ) {
                     JWTPrincipal(credential.payload)
                 } else {
                     null

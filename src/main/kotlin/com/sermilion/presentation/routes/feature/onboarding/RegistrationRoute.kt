@@ -1,11 +1,11 @@
-package com.sermilion.presentation.routes
+package com.sermilion.presentation.routes.feature.onboarding
 
 import com.sermilion.domain.onboarding.model.result.ErrorResponse
 import com.sermilion.domain.onboarding.model.result.RegistrationResult
 import com.sermilion.domain.onboarding.model.result.RegistrationResult.RegistrationErrorType.UsernameOrEmailTaken
 import com.sermilion.domain.onboarding.model.value.ValueValidationException
 import com.sermilion.domain.onboarding.repository.OnboardingRepository
-import com.sermilion.domain.onboarding.security.SecurityService
+import com.sermilion.domain.onboarding.security.UserAuthenticationService
 import com.sermilion.presentation.routes.model.RegistrationUiModel
 import com.sermilion.presentation.routes.model.mapper.toPresentationModel
 import com.sermilion.presentation.routes.model.param.RegisterParams
@@ -23,7 +23,7 @@ private const val ErrorTypePasswordMatch = "PasswordMatch"
 
 suspend fun Route.registrationRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()
-    val securityService: SecurityService by inject()
+    val userAuthenticationService: UserAuthenticationService by inject()
     val logger = LoggerFactory.getLogger(RegistrationRoute::class.java)
     val request = call.receive<RegisterParams>()
 
@@ -34,13 +34,13 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
         if (password != repeatPassword) {
             call.respond(
                 HttpStatusCode.BadRequest,
-                ErrorResponse(code = ErrorTypePasswordMatch, details = emptyList()),
+                ErrorResponse(code = ErrorTypePasswordMatch, details = emptyList<Unit>()),
             )
         }
 
         val result = onboardingRepository.register(
             username = request.usernameValue,
-            hashedPassword = securityService.hashPassword(password),
+            hashedPassword = userAuthenticationService.hashPassword(password),
             email = request.emailValue,
         )
 

@@ -5,14 +5,14 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.sermilion.domain.config.EnvironmentConfigProvider
 import com.sermilion.domain.onboarding.model.value.Password
 import com.sermilion.domain.onboarding.model.value.Username
-import com.sermilion.domain.onboarding.security.SecurityService
+import com.sermilion.domain.onboarding.security.UserAuthenticationService
 import de.mkammerer.argon2.Argon2Factory
 import java.util.Date
 import java.util.UUID
 
-class OilaSecurityService(
+class OilaUserAuthenticationService(
     private val configProvider: EnvironmentConfigProvider,
-) : SecurityService {
+) : UserAuthenticationService {
 
     private val argon2 = Argon2Factory.create()
 

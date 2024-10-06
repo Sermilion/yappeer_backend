@@ -8,7 +8,7 @@ value class Password(val value: String) {
     init {
         val passwordIsValid = value.isNotEmpty() && Pattern.compile(PASSWORD_PATTERN).matcher(value).matches()
         if (!passwordIsValid) {
-            throw ValueValidationException(ValueType.Password)
+            throw ValueValidationException(Password::class.simpleName.orEmpty())
         }
     }
 
