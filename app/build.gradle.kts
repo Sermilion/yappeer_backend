@@ -1,0 +1,56 @@
+plugins {
+    kotlin("jvm") version "2.0.20"
+    alias(libs.plugins.sermilion.ktor.library)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.kover)
+}
+
+group = "com.sermilion"
+version = "0.0.1"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+}
+
+kover {
+    reports {
+
+        filters {
+            includes {
+                classes(listOf("com.sermilion.ktor.*"))
+            }
+            excludes {
+                classes(file("kover-excludes.conf").readLines())
+            }
+        }
+
+        verify {
+            rule("Minimal line coverage rate in percent") {
+                bound {
+                    // TODO: change this to 50 when tests written
+                    minValue = 0
+                    aggregationForGroup =
+                        kotlinx.kover.gradle.plugin.dsl.AggregationType.COVERED_PERCENTAGE
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:presentation"))
+
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+}
+
+tasks.test {
+    useJUnitPlatform()
+}

@@ -1,8 +1,10 @@
 [versions]
+agp = "8.5.2"
 detekt = "1.23.7"
 ktor_version="3.0.0-rc-2"
 kotlin_version="2.0.20"
-koin_version= "4.0.0"
+koin_version= "3.4.3"
+ksp = "2.0.10-1.0.24"
 logback_version="1.5.8"
 postgres_version="42.7.4"
 h2_version="2.3.232"
@@ -10,8 +12,11 @@ exposedVersion="0.55.0"
 spotless = "6.21.0"
 
 [libraries]
+argon2 = { group = "de.mkammerer", name = "argon2-jvm", version = "2.1" }
+
 jetbrains-exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao", version.ref = "exposedVersion" }
 jetbrains-exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposedVersion" }
+jetbrains-exposed-time = { group = "org.jetbrains.exposed", name = "exposed-java-time", version.ref = "exposedVersion" }
 jetbrains-kotlin-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin_version" }
 jetbrains-kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.7.3" }
 jetbrains-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.6.1"}
@@ -26,6 +31,8 @@ koin-ktor = { group = "io.insert-koin", name = "koin-ktor", version.ref = "koin_
 
 ktor-client-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor_version" }
 ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json-jvm", version.ref = "ktor_version" }
+ktor-server-auth = { group = "io.ktor", name = "ktor-server-auth", version.ref = "ktor_version" }
+ktor-server-auth-jwt = { group = "io.ktor", name = "ktor-server-auth-jwt", version.ref = "ktor_version" }
 ktor-server-calllogging = { group = "io.ktor", name = "ktor-server-call-logging-jvm", version.ref = "ktor_version" }
 ktor-server-contentnegotiation = { group = "io.ktor", name = "ktor-server-content-negotiation-jvm", version.ref = "ktor_version" }
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core-jvm", version.ref = "ktor_version" }
@@ -40,8 +47,19 @@ postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "pos
 
 logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback_version" }
 
+# Dependencies of the included build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "detekt" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin_version" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktor_version" }
-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin_version" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin_version" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin_version" }
+kover = { id = "org.jetbrains.kotlinx.kover", version = "0.8.3" }
+
+# Plugins defined by this project
+sermilion-ktor-library = { id = "sermilion.ktor.library", version = "unspecified" }
