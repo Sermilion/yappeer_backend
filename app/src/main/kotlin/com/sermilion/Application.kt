@@ -1,5 +1,6 @@
 package com.sermilion
 
+import com.sermilion.di.configureDi
 import com.sermilion.presentation.plugins.configureDatabases
 import com.sermilion.presentation.plugins.configureMonitoring
 import com.sermilion.presentation.plugins.configureRouting
@@ -11,6 +12,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    configureDi()
     configureSerialization()
     configureMonitoring()
     configureRouting()

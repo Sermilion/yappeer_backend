@@ -43,32 +43,12 @@ kover {
 }
 
 dependencies {
-    implementation(libs.jetbrains.exposed.dao)
-    implementation(libs.jetbrains.exposed.jdbc)
-    implementation(libs.jetbrains.kotlinx.serialization)
-    implementation(libs.jsonpath)
-    implementation(libs.h2)
-    implementation(libs.ktor.server.statuspage)
-    implementation(libs.ktor.server.calllogging)
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.contentnegotiation)
-    implementation(libs.ktor.server.hostcommon)
-    implementation(libs.ktor.server.netty)
-    implementation(libs.ktor.server.resources)
-    implementation(libs.ktor.serialization)
-    implementation(libs.postgresql)
-    implementation(libs.jetbrains.kotlinx.datetime)
-    implementation(libs.commons.codec)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-    implementation("de.mkammerer:argon2-jvm:2.1")
-    implementation("io.ktor:ktor-server-auth:3.0.0-rc-2")
-    implementation("io.ktor:ktor-server-auth-jwt:3.0.0-rc-2")
-    implementation("org.jetbrains.exposed:exposed-java-time:0.54.0")
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:presentation"))
 
-    testImplementation(libs.jetbrains.kotlin.junit)
-    testImplementation(libs.ktor.client.contentnegotiation)
-    testImplementation(libs.ktor.server.testhost)
-    testImplementation(libs.ktor.server.testhotsjvm)
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
 }
 
 tasks.test {
