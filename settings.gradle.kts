@@ -1,4 +1,4 @@
-rootProject.name = "SermilionBackend"
+rootProject.name = "YapPeer"
 
 pluginManagement {
     includeBuild("build-logic")

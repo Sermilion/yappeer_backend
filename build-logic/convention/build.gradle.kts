@@ -4,7 +4,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.sermilion.ktor.buildlogic"
+group = "com.yappeer.ktor.buildlogic"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -33,23 +33,11 @@ tasks {
 gradlePlugin {
     plugins {
         register("ktorLibrary") {
-            id = "sermilion.ktor.library"
+            id = "yappeer.ktor.library"
             implementationClass = "KtorLibraryConventionPlugin"
         }
-//        register("androidHilt") {
-//            id = "sermilion.android.hilt"
-//            implementationClass = "AndroidHiltConventionPlugin"
-//        }
-//        register("androidRoom") {
-//            id = "sermilion.android.room"
-//            implementationClass = "AndroidRoomConventionPlugin"
-//        }
-//        register("androidFirebase") {
-//            id = "sermilion.ktor.application.firebase"
-//            implementationClass = "KtorApplicationFirebaseConventionPlugin"
-//        }
         register("detekt") {
-            id = "sermilion.detekt"
+            id = "yappeer.detekt"
             implementationClass = "DetektConventionPlugin"
         }
     }

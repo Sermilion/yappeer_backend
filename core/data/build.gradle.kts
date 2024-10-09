@@ -1,8 +1,8 @@
 plugins {
-    alias(libs.plugins.sermilion.ktor.library)
+    alias(libs.plugins.yappeer.ktor.library)
 }
 
-group = "com.sermilion.core.data"
+group = "com.yappeer.core.data"
 version = "unspecified"
 
 dependencies {
