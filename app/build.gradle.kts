@@ -1,11 +1,11 @@
 plugins {
     kotlin("jvm") version "2.0.20"
-    alias(libs.plugins.sermilion.ktor.library)
+    alias(libs.plugins.yappeer.ktor.library)
     alias(libs.plugins.detekt)
     alias(libs.plugins.kover)
 }
 
-group = "com.sermilion"
+group = "com.yappeer"
 version = "0.0.1"
 
 java {
@@ -22,7 +22,7 @@ kover {
 
         filters {
             includes {
-                classes(listOf("com.sermilion.ktor.*"))
+                classes(listOf("com.yappeer.ktor.*"))
             }
             excludes {
                 classes(file("kover-excludes.conf").readLines())

@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.ktor)
-    alias(libs.plugins.sermilion.ktor.library) apply false
+    alias(libs.plugins.yappeer.ktor.library) apply false
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.spotless)

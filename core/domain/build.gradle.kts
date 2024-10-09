@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.sermilion.ktor.library)
+    alias(libs.plugins.yappeer.ktor.library)
 }
 
-group = "com.sermilion.core.domain"
+group = "com.yappeer.core.domain"
 version = "unspecified"

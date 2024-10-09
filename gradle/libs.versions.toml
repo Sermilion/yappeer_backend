@@ -62,4 +62,4 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin_version" }
 kover = { id = "org.jetbrains.kotlinx.kover", version = "0.8.3" }
 
 # Plugins defined by this project
-sermilion-ktor-library = { id = "sermilion.ktor.library", version = "unspecified" }
+yappeer-ktor-library = { id = "yappeer.ktor.library", version = "unspecified" }
