@@ -21,4 +21,5 @@ dependencies {
     implementation(libs.ktor.server.statuspage)
     implementation(libs.jetbrains.kotlinx.datetime)
     implementation(libs.commons.codec)
+    implementation(libs.ktor.server.openapi)
 }

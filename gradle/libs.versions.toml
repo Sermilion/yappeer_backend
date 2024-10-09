@@ -38,6 +38,7 @@ ktor-server-contentnegotiation = { group = "io.ktor", name = "ktor-server-conten
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core-jvm", version.ref = "ktor_version" }
 ktor-server-hostcommon = { group = "io.ktor", name = "ktor-server-host-common-jvm", version.ref = "ktor_version" }
 ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty-jvm", version.ref = "ktor_version" }
+ktor-server-openapi = { group = "io.ktor", name = "ktor-server-openapi", version.ref = "ktor_version" }
 ktor-server-resources = { group = "io.ktor", name = "ktor-server-resources", version.ref = "ktor_version" }
 ktor-server-statuspage = { group = "io.ktor", name = "ktor-server-status-pages", version.ref = "ktor_version" }
 ktor-server-testhost = { group = "io.ktor", name = "ktor-server-test-host", version.ref = "ktor_version" }

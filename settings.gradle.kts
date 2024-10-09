@@ -1,4 +1,4 @@
-rootProject.name = "YapPeer"
+rootProject.name = "Yappeer"
 
 pluginManagement {
     includeBuild("build-logic")
