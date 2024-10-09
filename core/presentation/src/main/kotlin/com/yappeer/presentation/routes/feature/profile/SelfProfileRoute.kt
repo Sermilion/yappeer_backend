@@ -37,7 +37,7 @@ suspend fun Route.selfProfileRoute(call: RoutingCall) {
         } else {
             val message = "Invalid token"
             logger.info(message)
-            call.respond(HttpStatusCode.BadRequest, message)
+            call.respond(HttpStatusCode.Unauthorized, message)
         }
     } catch (e: ValueValidationException) {
         val message = "Validation error for value type ${e.valueType}"
