@@ -1,4 +1,4 @@
-package com.yappeer.data.onboarding.datasource
+package com.yappeer.data.onboarding.datasource.db.dao
 
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
@@ -16,7 +16,6 @@ class UserCredentialsDAO(id: EntityID<UUID>) : UUIDEntity(id) {
     var passwordHash by UserCredentialsTable.password_hash
     var createdAt by UserCredentialsTable.createdAt
     var lastLogin by UserCredentialsTable.lastLogin
-    var avatar by UserCredentialsTable.avatar
 }
 
 object UserCredentialsTable : UUIDTable("user_credentials") {
@@ -25,5 +24,4 @@ object UserCredentialsTable : UUIDTable("user_credentials") {
     val password_hash = text("password_hash")
     val createdAt = timestamp("created_at")
     val lastLogin = timestamp("last_login").nullable()
-    val avatar = text("avatar").nullable()
 }

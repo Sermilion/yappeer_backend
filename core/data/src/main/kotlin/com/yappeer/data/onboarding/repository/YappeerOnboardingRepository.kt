@@ -33,7 +33,6 @@ class YappeerOnboardingRepository(
                     id = result.user.id.toString(),
                     username = result.user.username,
                     email = result.user.email,
-                    avatar = result.user.avatar,
                 )
                 RegistrationResult.Success(user)
             }
@@ -47,13 +46,17 @@ class YappeerOnboardingRepository(
     }
 
     override fun findUser(username: Username): Profile? {
-        val result = dataSource.findUser(username.value.lowercase())
+        val result = dataSource.findUser(username)
         val profile = result?.let {
             Profile(
                 id = it.id,
                 username = it.username,
                 email = it.email,
                 avatar = it.avatar,
+                bio = it.bio,
+                createdAt = it.createdAt,
+                lastLogin = it.lastLogin,
+                tags = it.tags,
             )
         }
         return profile

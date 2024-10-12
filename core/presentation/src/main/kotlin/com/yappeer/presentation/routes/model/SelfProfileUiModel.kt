@@ -3,11 +3,9 @@ package com.yappeer.presentation.routes.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ProfileUiModel(
+data class SelfProfileUiModel(
     val id: String,
     val username: String,
     val email: String,
     val avatar: String?,
-    val bio: String?,
-    val tags: List<TagUiModel>,
 )

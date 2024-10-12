@@ -13,6 +13,5 @@ sealed interface RegistrationResult {
         val id: String,
         val username: String,
         val email: String,
-        val avatar: String?,
     )
 }

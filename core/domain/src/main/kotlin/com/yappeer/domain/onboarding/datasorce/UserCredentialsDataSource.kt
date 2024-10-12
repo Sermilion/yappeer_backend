@@ -3,6 +3,7 @@ package com.yappeer.domain.onboarding.datasorce
 import com.yappeer.domain.onboarding.model.User
 import com.yappeer.domain.onboarding.model.result.SqlRegistrationResult
 import com.yappeer.domain.onboarding.model.value.Password
+import com.yappeer.domain.onboarding.model.value.Username
 
 interface UserCredentialsDataSource {
     fun createUser(
@@ -12,5 +13,5 @@ interface UserCredentialsDataSource {
     ): SqlRegistrationResult
 
     fun findPassword(username: String): Password?
-    fun findUser(username: String): User?
+    fun findUser(username: Username): User?
 }

@@ -5,24 +5,21 @@ import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
 import com.yappeer.presentation.routes.model.mapper.ResponseMapper.toUserProfileUiModel
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.principal
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingCall
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 
-internal const val SelfProfileRoute = "/self_profile"
+internal const val UserProfileRoute = "/user_profile"
 private const val UsernameParam = "username"
 
-suspend fun Route.selfProfileRoute(call: RoutingCall) {
+suspend fun Route.userProfileRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()
 
     val logger = LoggerFactory.getLogger(SelfProfileRoute)
 
-    val principal = call.principal<JWTPrincipal>()
-    val username = principal?.payload?.getClaim(UsernameParam)?.asString()
+    val username = call.request.queryParameters[UsernameParam]
 
     try {
         if (username != null) {

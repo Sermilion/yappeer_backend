@@ -39,7 +39,7 @@ class YappeerUserAuthenticationService(
         val config = configProvider.provideJwtConfig()
 
         val token = JWT.create()
-            .withClaim(TOKEN_USERNAME, username.value)
+            .withClaim(USERNAME, username.value)
             .withExpiresAt(Date(System.currentTimeMillis() + TOKEN_DURATION))
             .sign(Algorithm.HMAC256(config.secret))
         return token
@@ -59,7 +59,6 @@ class YappeerUserAuthenticationService(
         private const val ITERATIONS = 10
         private const val MEMORY_KB = 65536 // 64 MB
         private const val PARALLELISM = 1
-        private const val TOKEN_USERNAME = "username"
         private const val TOKEN_DURATION = 60000L
         private const val USERNAME = "username"
         private const val TOKEN_ID = "tokenId"

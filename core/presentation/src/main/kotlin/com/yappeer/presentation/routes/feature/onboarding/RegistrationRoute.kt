@@ -50,7 +50,6 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
                     id = result.user.id,
                     username = result.user.username,
                     email = result.user.email,
-                    avatar = result.user.avatar,
                 )
                 call.respond(HttpStatusCode.Created, regResult)
             }
