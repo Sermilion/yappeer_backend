@@ -1,15 +1,16 @@
-package com.yappeer.domain.onboarding.model
+package com.yappeer.presentation.routes.model
 
 import kotlinx.datetime.Instant
-import java.util.UUID
+import kotlinx.serialization.Serializable
 
-data class User(
-    val id: UUID,
+@Serializable
+data class UserUiModel(
+    val id: String,
     val username: String,
     val email: String,
     val bio: String?,
     val avatar: String?,
-    val background: String?,
     val createdAt: Instant,
     val lastLogin: Instant?,
+    val background: String?,
 )

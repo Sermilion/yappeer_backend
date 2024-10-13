@@ -1,7 +1,7 @@
 package com.yappeer.data.onboarding.repository
 
-import com.yappeer.domain.onboarding.datasorce.UserCredentialsDataSource
-import com.yappeer.domain.onboarding.model.Profile
+import com.yappeer.domain.onboarding.datasorce.UserDataSource
+import com.yappeer.domain.onboarding.model.User
 import com.yappeer.domain.onboarding.model.result.RegistrationResult
 import com.yappeer.domain.onboarding.model.result.RegistrationResult.RegistrationErrorType.UnknownError
 import com.yappeer.domain.onboarding.model.result.RegistrationResult.RegistrationErrorType.UsernameOrEmailTaken
@@ -10,9 +10,11 @@ import com.yappeer.domain.onboarding.model.value.Email
 import com.yappeer.domain.onboarding.model.value.Password
 import com.yappeer.domain.onboarding.model.value.Username
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
+import kotlinx.datetime.Instant
+import java.util.UUID
 
 class YappeerOnboardingRepository(
-    private val dataSource: UserCredentialsDataSource,
+    private val dataSource: UserDataSource,
 ) : OnboardingRepository {
 
     override fun register(
@@ -28,37 +30,24 @@ class YappeerOnboardingRepository(
 
         return when (result) {
             SqlRegistrationResult.ConstraintViolation -> RegistrationResult.Error(UsernameOrEmailTaken)
-            is SqlRegistrationResult.Success -> {
-                val user = RegistrationResult.Data(
-                    id = result.user.id.toString(),
-                    username = result.user.username,
-                    email = result.user.email,
-                )
-                RegistrationResult.Success(user)
-            }
-
+            is SqlRegistrationResult.Success -> RegistrationResult.Success(result.user)
             SqlRegistrationResult.UnknownError -> RegistrationResult.Error(UnknownError)
         }
     }
 
-    override fun findPassword(username: Username): Password? {
-        return dataSource.findPassword(username.value)
+    override fun findPassword(email: Email): Password? {
+        return dataSource.findPassword(email)
     }
 
-    override fun findUser(username: Username): Profile? {
-        val result = dataSource.findUser(username)
-        val profile = result?.let {
-            Profile(
-                id = it.id,
-                username = it.username,
-                email = it.email,
-                avatar = it.avatar,
-                bio = it.bio,
-                createdAt = it.createdAt,
-                lastLogin = it.lastLogin,
-                tags = it.tags,
-            )
-        }
-        return profile
+    override fun findUser(userId: UUID): User? {
+        return dataSource.findUser(userId)
+    }
+
+    override fun findUser(email: Email): User? {
+        return dataSource.findUser(email)
+    }
+
+    override fun updateLastLogin(userId: UUID, instant: Instant) {
+        dataSource.updateLastLogin(userId, instant)
     }
 }

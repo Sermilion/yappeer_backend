@@ -9,5 +9,4 @@ data class ProfileUiModel(
     val email: String,
     val avatar: String?,
     val bio: String?,
-    val tags: List<TagUiModel>,
 )

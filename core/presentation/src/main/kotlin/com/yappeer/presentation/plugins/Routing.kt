@@ -12,6 +12,7 @@ import com.yappeer.presentation.routes.feature.profile.selfProfileRoute
 import com.yappeer.presentation.routes.feature.profile.userProfileRoute
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
+import io.ktor.server.auth.authenticate
 import io.ktor.server.plugins.openapi.openAPI
 import io.ktor.server.resources.Resources
 import io.ktor.server.routing.get
@@ -28,10 +29,10 @@ fun Application.configureRouting() {
         post(LoginRoute) { loginRoute(call) }
         post(RegistrationRoute) { registrationRoute(call) }
 
-//        authenticate(AuthenticationIdentifier) {
-        get(UserProfileRoute) { userProfileRoute(call) }
-        get(SelfProfileRoute) { selfProfileRoute(call) }
-        get(RefreshTokenRoute) { refreshTokenRoute(call) }
-//        }
+        authenticate(AuthenticationIdentifier) {
+            get(UserProfileRoute) { userProfileRoute(call) }
+            get(SelfProfileRoute) { selfProfileRoute(call) }
+            get(RefreshTokenRoute) { refreshTokenRoute(call) }
+        }
     }
 }

@@ -1,9 +1,9 @@
 package com.yappeer.presentation.routes.feature.profile
 
-import com.yappeer.domain.onboarding.model.value.Username
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
-import com.yappeer.presentation.routes.model.mapper.ResponseMapper.toUserProfileUiModel
+import com.yappeer.domain.onboarding.security.UserAuthenticationService.Companion.CLAIM_USER_ID
+import com.yappeer.presentation.routes.model.mapper.ResponseMapper.toUiModel
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
@@ -12,9 +12,9 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingCall
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
+import java.util.UUID
 
 internal const val SelfProfileRoute = "/self_profile"
-private const val UsernameParam = "username"
 
 suspend fun Route.selfProfileRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()
@@ -22,14 +22,16 @@ suspend fun Route.selfProfileRoute(call: RoutingCall) {
     val logger = LoggerFactory.getLogger(SelfProfileRoute)
 
     val principal = call.principal<JWTPrincipal>()
-    val username = principal?.payload?.getClaim(UsernameParam)?.asString()
+    val userId = principal?.payload?.getClaim(CLAIM_USER_ID)?.asString()?.let {
+        UUID.fromString(it)
+    }
 
     try {
-        if (username != null) {
-            val result = onboardingRepository.findUser(Username(username))
+        if (userId != null) {
+            val result = onboardingRepository.findUser(userId)
 
             if (result != null) {
-                val profile = result.toUserProfileUiModel()
+                val profile = result.toUiModel()
                 call.respond(HttpStatusCode.OK, profile)
             } else {
                 call.respond(HttpStatusCode.NotFound)
