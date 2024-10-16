@@ -49,6 +49,12 @@ dependencies {
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
+
+    // temporary, until I figure out how to make tests run in their respective module
+    testImplementation(libs.jetbrains.exposed.dao)
+    testImplementation(libs.jetbrains.exposed.jdbc)
+    testImplementation(libs.jetbrains.exposed.time)
+    testImplementation(libs.jetbrains.kotlinx.datetime)
 }
 
 tasks.test {

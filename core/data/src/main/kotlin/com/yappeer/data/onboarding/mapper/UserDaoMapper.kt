@@ -15,6 +15,8 @@ internal object UserDaoMapper {
             bio = this.bio,
             avatar = this.avatar,
             background = this.background,
+            followers = 0,
+            following = 0,
         )
     }
 }

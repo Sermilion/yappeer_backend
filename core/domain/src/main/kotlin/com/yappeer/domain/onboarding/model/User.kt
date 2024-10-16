@@ -12,4 +12,6 @@ data class User(
     val background: String?,
     val createdAt: Instant,
     val lastLogin: Instant?,
+    val followers: Long,
+    val following: Long,
 )
