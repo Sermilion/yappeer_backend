@@ -13,10 +13,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-repositories {
-    mavenCentral()
-}
-
 kover {
     reports {
 
@@ -55,6 +51,10 @@ dependencies {
     testImplementation(libs.jetbrains.exposed.jdbc)
     testImplementation(libs.jetbrains.exposed.time)
     testImplementation(libs.jetbrains.kotlinx.datetime)
+
+    testImplementation(libs.ktor.server.testhost)
+    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation(libs.ktor.serialization)
 }
 
 tasks.test {

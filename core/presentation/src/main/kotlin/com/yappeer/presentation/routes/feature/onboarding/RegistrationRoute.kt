@@ -5,7 +5,7 @@ import com.yappeer.domain.onboarding.model.result.RegistrationResult.Registratio
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
 import com.yappeer.domain.onboarding.security.UserAuthenticationService
-import com.yappeer.presentation.routes.model.mapper.ResponseMapper.toUiModel
+import com.yappeer.presentation.routes.model.mapper.UserResponseMapper.toUiModel
 import com.yappeer.presentation.routes.model.mapper.toPresentationModel
 import com.yappeer.presentation.routes.model.param.RegisterParams
 import com.yappeer.presentation.routes.model.result.ErrorResponse

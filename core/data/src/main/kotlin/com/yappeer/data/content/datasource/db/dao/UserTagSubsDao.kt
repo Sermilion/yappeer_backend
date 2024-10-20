@@ -1,5 +1,6 @@
-package com.yappeer.data.onboarding.datasource.db.dao
+package com.yappeer.data.content.datasource.db.dao
 
+import com.yappeer.data.onboarding.datasource.db.dao.UserTable
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID

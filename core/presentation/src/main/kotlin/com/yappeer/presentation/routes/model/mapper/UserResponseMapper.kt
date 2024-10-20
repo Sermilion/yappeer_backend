@@ -1,9 +1,9 @@
 package com.yappeer.presentation.routes.model.mapper
 
 import com.yappeer.domain.onboarding.model.User
-import com.yappeer.presentation.routes.model.UserUiModel
+import com.yappeer.presentation.routes.model.ui.UserUiModel
 
-internal object ResponseMapper {
+internal object UserResponseMapper {
 
     fun User.toUiModel(): UserUiModel {
         return UserUiModel(
@@ -18,5 +18,3 @@ internal object ResponseMapper {
         )
     }
 }
-
-//

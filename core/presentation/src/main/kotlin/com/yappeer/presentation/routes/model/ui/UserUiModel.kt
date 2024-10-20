@@ -1,4 +1,4 @@
-package com.yappeer.presentation.routes.model
+package com.yappeer.presentation.routes.model.ui
 
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable

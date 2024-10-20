@@ -1,12 +1,17 @@
-import com.yappeer.data.content.datasource.db.dao.YappeerSubscriptionsDataSource
-import com.yappeer.data.onboarding.datasource.db.dao.TagDAO
-import com.yappeer.data.onboarding.datasource.db.dao.TagTable
+import com.yappeer.data.content.datasource.YappeerSubscriptionsDataSource
+import com.yappeer.data.content.datasource.db.dao.TagDAO
+import com.yappeer.data.content.datasource.db.dao.TagTable
+import com.yappeer.data.content.datasource.db.dao.UserTagSubsDAO
+import com.yappeer.data.content.datasource.db.dao.UserTagSubsTable
+import com.yappeer.data.content.datasource.db.dao.UserUserSubsDAO
+import com.yappeer.data.content.datasource.db.dao.UserUserSubsTable
 import com.yappeer.data.onboarding.datasource.db.dao.UserDAO
 import com.yappeer.data.onboarding.datasource.db.dao.UserTable
-import com.yappeer.data.onboarding.datasource.db.dao.UserTagSubsDAO
-import com.yappeer.data.onboarding.datasource.db.dao.UserTagSubsTable
-import com.yappeer.data.onboarding.datasource.db.dao.UserUserSubsDAO
-import com.yappeer.data.onboarding.datasource.db.dao.UserUserSubsTable
+import com.yappeer.domain.content.model.FollowersResult
+import com.yappeer.domain.content.model.TagResult
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
@@ -20,7 +25,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-class YappeerSubscriptionsDataSourceTest {
+class YappeerFollowingUserRouteDataSourceTest {
 
     private lateinit var database: Database
     private lateinit var yappeerSubscriptionsDataSource: YappeerSubscriptionsDataSource
@@ -56,53 +61,64 @@ class YappeerSubscriptionsDataSourceTest {
     }
 
     @Test
-    fun findFollowing() = runBlocking {
-        // given
-        val list = prepareUserList()
-        val subscriber = list[0]
-        createUserUserSubscription(subscriber.id.value, list[1].id.value)
-        createUserUserSubscription(subscriber.id.value, list[2].id.value)
-        createUserUserSubscription(subscriber.id.value, list[3].id.value)
-        createUserUserSubscription(subscriber.id.value, list[4].id.value)
-        createUserUserSubscription(subscriber.id.value, list[5].id.value)
-        createUserUserSubscription(subscriber.id.value, list[6].id.value)
+    fun findFollowing() {
+        runBlocking {
+            // given
+            val list = prepareUserList()
+            val subscriber = list[0]
+            createUserUserSubscription(subscriber.id.value, list[1].id.value)
+            createUserUserSubscription(subscriber.id.value, list[2].id.value)
+            createUserUserSubscription(subscriber.id.value, list[3].id.value)
+            createUserUserSubscription(subscriber.id.value, list[4].id.value)
+            createUserUserSubscription(subscriber.id.value, list[5].id.value)
+            createUserUserSubscription(subscriber.id.value, list[6].id.value)
 
-        // when
-        val followers = yappeerSubscriptionsDataSource.findFollowing(
-            userId = subscriber.id.value,
-            pageSize = 2,
-            page = 2,
-        )
+            // when
+            val result = yappeerSubscriptionsDataSource.findFollowing(
+                userId = subscriber.id.value,
+                pageSize = 2,
+                page = 2,
+            )
 
-        // then
-        assertEquals(2, followers.size)
-        assertEquals(list[3].id.value, followers[0].id)
-        assertEquals(list[4].id.value, followers[1].id)
+            // then
+            result.shouldBeInstanceOf<FollowersResult.Data>()
+
+            result.pagesCount shouldBe 3
+            result.currentPage shouldBe 2
+            result.users shouldHaveSize 2
+            list[3].id.value shouldBe result.users[0].id
+            list[4].id.value shouldBe result.users[1].id
+        }
     }
 
     @Test
-    fun findFollowers() = runBlocking {
-        // given
-        val list = prepareUserList()
-        val subscribee = list[0]
-        createUserUserSubscription(userId = list[3].id.value, subId = subscribee.id.value)
-        createUserUserSubscription(userId = list[2].id.value, subId = subscribee.id.value)
-        createUserUserSubscription(userId = list[3].id.value, subId = subscribee.id.value)
-        createUserUserSubscription(userId = list[4].id.value, subId = subscribee.id.value)
-        createUserUserSubscription(userId = list[5].id.value, subId = subscribee.id.value)
-        createUserUserSubscription(userId = list[6].id.value, subId = subscribee.id.value)
+    fun findFollowers() {
+        runBlocking {
+            // given
+            val list = prepareUserList()
+            val subscribee = list[0]
+            createUserUserSubscription(userId = list[3].id.value, subId = subscribee.id.value)
+            createUserUserSubscription(userId = list[2].id.value, subId = subscribee.id.value)
+            createUserUserSubscription(userId = list[3].id.value, subId = subscribee.id.value)
+            createUserUserSubscription(userId = list[4].id.value, subId = subscribee.id.value)
+            createUserUserSubscription(userId = list[5].id.value, subId = subscribee.id.value)
+            createUserUserSubscription(userId = list[6].id.value, subId = subscribee.id.value)
 
-        // when
-        val followers = yappeerSubscriptionsDataSource.findFollowers(
-            userId = subscribee.id.value,
-            pageSize = 2,
-            page = 2,
-        )
+            // when
+            val result = yappeerSubscriptionsDataSource.findFollowers(
+                userId = subscribee.id.value,
+                pageSize = 2,
+                page = 2,
+            )
 
-        // then
-        assertEquals(2, followers.size)
-        assertEquals(list[3].id.value, followers[0].id)
-        assertEquals(list[4].id.value, followers[1].id)
+            // then
+            result.shouldBeInstanceOf<FollowersResult.Data>()
+            result.users shouldHaveSize 2
+            result.pagesCount shouldBe 3
+            result.currentPage shouldBe 2
+            result.users[0].id shouldBe list[3].id.value
+            result.users[1].id shouldBe list[4].id.value
+        }
     }
 
     @Test
@@ -117,22 +133,25 @@ class YappeerSubscriptionsDataSourceTest {
         createUserTagSubscription(testUser2.id.value, testTag1.id.value)
 
         // When
-        val followedTags = yappeerSubscriptionsDataSource.findFollowedTags(
+        val result = yappeerSubscriptionsDataSource.findFollowedTags(
             userId = testUser1.id.value,
             pageSize = 10,
             page = 1,
         )
 
         // Then
-        assertEquals(2, followedTags.size)
+        result.shouldBeInstanceOf<TagResult.Data>()
+        result.tags shouldHaveSize 2
+        result.pagesCount shouldBe 1
+        result.currentPage shouldBe 1
 
         // Assert details of the first followed tag (testTag1)
-        val followedTag1 = followedTags.find { it.id == testTag1.id.value }
+        val followedTag1 = result.tags.find { it.id == testTag1.id.value }
         assertEquals(testTag1.name, followedTag1?.name)
         assertEquals(2, followedTag1?.followers) // Two users follow this tag
 
         // Assert details of the second followed tag (testTag2)
-        val followedTag2 = followedTags.find { it.id == testTag2.id.value }
+        val followedTag2 = result.tags.find { it.id == testTag2.id.value }
         assertEquals(testTag2.name, followedTag2?.name)
         assertEquals(1, followedTag2?.followers) // Only one user follows this tag
     }

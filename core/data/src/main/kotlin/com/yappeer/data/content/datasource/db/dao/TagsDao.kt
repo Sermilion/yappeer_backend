@@ -1,4 +1,4 @@
-package com.yappeer.data.onboarding.datasource.db.dao
+package com.yappeer.data.content.datasource.db.dao
 
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass

@@ -3,7 +3,7 @@ package com.yappeer.presentation.routes.feature.profile
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
 import com.yappeer.domain.onboarding.security.UserAuthenticationService.Companion.CLAIM_USER_ID
-import com.yappeer.presentation.routes.model.mapper.ResponseMapper.toUiModel
+import com.yappeer.presentation.routes.model.mapper.UserResponseMapper.toUiModel
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal

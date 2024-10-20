@@ -60,7 +60,7 @@ class YappeerUserAuthenticationService(
         private const val ITERATIONS = 10
         private const val MEMORY_KB = 65536 // 64 MB
         private const val PARALLELISM = 1
-        private const val TOKEN_DURATION = 60000L
+        private const val TOKEN_DURATION = 60000 * 60 * 24 * 7L
         private const val REFRESH_TOKEN_DURATION = 3600000L
     }
 }

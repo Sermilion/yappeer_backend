@@ -1,6 +1,6 @@
 package com.yappeer.data.onboarding.mapper
 
-import com.yappeer.data.onboarding.datasource.db.dao.TagDAO
+import com.yappeer.data.content.datasource.db.dao.TagDAO
 import com.yappeer.domain.content.model.Tag
 
 object TagDaoMapper {

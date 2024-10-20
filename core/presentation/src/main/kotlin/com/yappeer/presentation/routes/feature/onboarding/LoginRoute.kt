@@ -3,9 +3,9 @@ package com.yappeer.presentation.routes.feature.onboarding
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
 import com.yappeer.domain.onboarding.security.UserAuthenticationService
-import com.yappeer.presentation.routes.model.TokenUiModel
 import com.yappeer.presentation.routes.model.param.LoginParams
 import com.yappeer.presentation.routes.model.result.ErrorResponse
+import com.yappeer.presentation.routes.model.ui.TokenUiModel
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond

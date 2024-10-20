@@ -7,7 +7,7 @@ import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.security.JwtTokenService
 import com.yappeer.domain.onboarding.security.UserAuthenticationService
 import com.yappeer.domain.onboarding.security.UserAuthenticationService.Companion.CLAIM_USER_ID
-import com.yappeer.presentation.routes.model.TokenUiModel
+import com.yappeer.presentation.routes.model.ui.TokenUiModel
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.header
 import io.ktor.server.response.respond

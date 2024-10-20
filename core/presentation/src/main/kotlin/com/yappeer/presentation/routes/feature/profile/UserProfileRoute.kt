@@ -2,7 +2,7 @@ package com.yappeer.presentation.routes.feature.profile
 
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
-import com.yappeer.presentation.routes.model.mapper.ResponseMapper.toUiModel
+import com.yappeer.presentation.routes.model.mapper.UserResponseMapper.toUiModel
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -17,7 +17,7 @@ private const val UserIdParam = "user_id"
 suspend fun Route.userProfileRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()
 
-    val logger = LoggerFactory.getLogger(SelfProfileRoute)
+    val logger = LoggerFactory.getLogger(UserProfileRoute)
 
     val userId = call.request.queryParameters[UserIdParam]?.let {
         UUID.fromString(it)
