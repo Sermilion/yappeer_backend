@@ -86,6 +86,7 @@ class YappeerFollowingUserRouteDataSourceTest {
             result.pagesCount shouldBe 3
             result.currentPage shouldBe 2
             result.users shouldHaveSize 2
+            result.totalUserCount shouldBe 6
             list[3].id.value shouldBe result.users[0].id
             list[4].id.value shouldBe result.users[1].id
         }
@@ -97,7 +98,7 @@ class YappeerFollowingUserRouteDataSourceTest {
             // given
             val list = prepareUserList()
             val subscribee = list[0]
-            createUserUserSubscription(userId = list[3].id.value, subId = subscribee.id.value)
+            createUserUserSubscription(userId = list[1].id.value, subId = subscribee.id.value)
             createUserUserSubscription(userId = list[2].id.value, subId = subscribee.id.value)
             createUserUserSubscription(userId = list[3].id.value, subId = subscribee.id.value)
             createUserUserSubscription(userId = list[4].id.value, subId = subscribee.id.value)
@@ -116,6 +117,7 @@ class YappeerFollowingUserRouteDataSourceTest {
             result.users shouldHaveSize 2
             result.pagesCount shouldBe 3
             result.currentPage shouldBe 2
+            result.totalUserCount shouldBe 6
             result.users[0].id shouldBe list[3].id.value
             result.users[1].id shouldBe list[4].id.value
         }

@@ -16,7 +16,6 @@ import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.innerJoin
-import org.jetbrains.exposed.sql.leftJoin
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
@@ -29,9 +28,7 @@ class YappeerSubscriptionsDataSource : SubscriptionsDataSource {
         return try {
             transaction {
                 val totalFollowers =
-                    (UserTable.innerJoin(UserUserSubsTable, { UserTable.id }, { UserUserSubsTable.userId }))
-                        .selectAll().where { UserUserSubsTable.subId eq userId }
-                        .count()
+                    UserUserSubsTable.selectAll().where { UserUserSubsTable.subId eq userId }.count()
 
                 val followers = (UserTable.innerJoin(UserUserSubsTable, { UserTable.id }, { UserUserSubsTable.userId }))
                     .selectAll()
@@ -44,7 +41,12 @@ class YappeerSubscriptionsDataSource : SubscriptionsDataSource {
                 } else {
                     totalFollowers / pageSize + 1
                 }
-                FollowersResult.Data(followers, pagesCount, page)
+                FollowersResult.Data(
+                    users = followers,
+                    totalUserCount = totalFollowers,
+                    pagesCount = pagesCount,
+                    currentPage = page,
+                )
             }
         } catch (e: ExposedSQLException) {
             val message = "Error fetching followers."
@@ -57,9 +59,7 @@ class YappeerSubscriptionsDataSource : SubscriptionsDataSource {
         return try {
             transaction {
                 val totalFollowing =
-                    (UserTable.innerJoin(UserUserSubsTable, { UserTable.id }, { UserUserSubsTable.userId }))
-                        .selectAll().where { UserUserSubsTable.userId eq userId }
-                        .count()
+                    UserUserSubsTable.selectAll().where { UserUserSubsTable.userId eq userId }.count()
 
                 val followings = (UserTable.innerJoin(UserUserSubsTable, { UserTable.id }, { subId }))
                     .selectAll().where { UserUserSubsTable.userId eq userId }
@@ -72,7 +72,12 @@ class YappeerSubscriptionsDataSource : SubscriptionsDataSource {
                 } else {
                     totalFollowing / pageSize + 1
                 }
-                FollowersResult.Data(followings, pagesCount, page)
+                FollowersResult.Data(
+                    users = followings,
+                    totalUserCount = totalFollowing,
+                    pagesCount = pagesCount,
+                    currentPage = page,
+                )
             }
         } catch (e: ExposedSQLException) {
             val message = "Error fetching following."
@@ -85,13 +90,13 @@ class YappeerSubscriptionsDataSource : SubscriptionsDataSource {
         return try {
             transaction {
                 val totalTags = (
-                    TagTable.alias("TAG") // Alias introduced here
-                        .leftJoin(UserTagSubsTable, { TagTable.id }, { tagId })
+                    TagTable.alias("TAG")
+                        .innerJoin(UserTagSubsTable, { TagTable.id }, { tagId })
                     )
                     .selectAll().where { UserTagSubsTable.userId eq userId }
                     .count()
 
-                val dbResult = (TagTable.leftJoin(UserTagSubsTable, { TagTable.id }, { tagId }))
+                val dbResult = (TagTable.innerJoin(UserTagSubsTable, { TagTable.id }, { tagId }))
                     .select(TagTable.id, TagTable.name, UserTagSubsTable.userId.count())
                     .limit(pageSize).offset((page - 1) * pageSize.toLong())
                     .groupBy(TagTable.id, TagTable.name)

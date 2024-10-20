@@ -4,9 +4,10 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserUiModel(
+data class SelfUserUiModel(
     val id: String,
     val username: String,
+    val email: String,
     val bio: String?,
     val avatar: String?,
     val createdAt: Instant,

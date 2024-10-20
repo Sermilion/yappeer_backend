@@ -9,6 +9,7 @@ internal object FollowersResponseMapper {
     fun FollowersResult.Data.toUiModel(): FollowersUiModel {
         return FollowersUiModel(
             users = this.users.map { it.toUiModel() },
+            totalUserCount = this.totalUserCount,
             pagesCount = this.pagesCount,
             currentPage = this.currentPage,
         )

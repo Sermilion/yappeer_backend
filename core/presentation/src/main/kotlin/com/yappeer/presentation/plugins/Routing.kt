@@ -6,10 +6,12 @@ import com.yappeer.presentation.routes.feature.onboarding.RegistrationRoute
 import com.yappeer.presentation.routes.feature.onboarding.loginRoute
 import com.yappeer.presentation.routes.feature.onboarding.refreshTokenRoute
 import com.yappeer.presentation.routes.feature.onboarding.registrationRoute
-import com.yappeer.presentation.routes.feature.profile.FollowersRoute
+import com.yappeer.presentation.routes.feature.profile.FollowersUsersRoute
+import com.yappeer.presentation.routes.feature.profile.FollowingUserRoute
 import com.yappeer.presentation.routes.feature.profile.SelfProfileRoute
 import com.yappeer.presentation.routes.feature.profile.UserProfileRoute
-import com.yappeer.presentation.routes.feature.profile.followersRoute
+import com.yappeer.presentation.routes.feature.profile.followersUsersRoute
+import com.yappeer.presentation.routes.feature.profile.followingUsersRoute
 import com.yappeer.presentation.routes.feature.profile.selfProfileRoute
 import com.yappeer.presentation.routes.feature.profile.userProfileRoute
 import io.ktor.server.application.Application
@@ -35,7 +37,8 @@ fun Application.configureRouting() {
             get(UserProfileRoute) { userProfileRoute(call) }
             get(SelfProfileRoute) { selfProfileRoute(call) }
             get(RefreshTokenRoute) { refreshTokenRoute(call) }
-            post(FollowersRoute) { followersRoute(call) }
+            post(FollowersUsersRoute) { followersUsersRoute(call) }
+            post(FollowingUserRoute) { followingUsersRoute(call) }
         }
     }
 }
