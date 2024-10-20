@@ -5,7 +5,7 @@ import com.yappeer.domain.onboarding.model.result.RegistrationResult.Registratio
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
 import com.yappeer.domain.onboarding.security.UserAuthenticationService
-import com.yappeer.presentation.routes.model.RegistrationUiModel
+import com.yappeer.presentation.routes.model.mapper.UserResponseMapper.toUiModel
 import com.yappeer.presentation.routes.model.mapper.toPresentationModel
 import com.yappeer.presentation.routes.model.param.RegisterParams
 import com.yappeer.presentation.routes.model.result.ErrorResponse
@@ -46,13 +46,7 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
 
         when (result) {
             is RegistrationResult.Success -> {
-                val regResult = RegistrationUiModel(
-                    id = result.user.id,
-                    username = result.user.username,
-                    email = result.user.email,
-                    avatar = result.user.avatar,
-                )
-                call.respond(HttpStatusCode.Created, regResult)
+                call.respond(HttpStatusCode.Created, result.user.toUiModel())
             }
             is RegistrationResult.Error -> {
                 when (result.errorType) {

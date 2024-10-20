@@ -3,11 +3,11 @@ package com.yappeer.presentation.routes.feature.onboarding
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
-import com.yappeer.domain.onboarding.model.value.Username
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.security.JwtTokenService
 import com.yappeer.domain.onboarding.security.UserAuthenticationService
-import com.yappeer.presentation.routes.model.TokenUiModel
+import com.yappeer.domain.onboarding.security.UserAuthenticationService.Companion.CLAIM_USER_ID
+import com.yappeer.presentation.routes.model.ui.TokenUiModel
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.header
 import io.ktor.server.response.respond
@@ -16,11 +16,11 @@ import io.ktor.server.routing.RoutingCall
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 import java.util.Date
+import java.util.UUID
 
 internal const val RefreshTokenRoute = "/refresh_token"
 private const val HeaderAuthorization = "Authorization"
 private const val HeaderBearer = "Bearer "
-private const val JwtClaimUsername = "username"
 
 suspend fun Route.refreshTokenRoute(call: RoutingCall) {
     val userAuthenticationService: UserAuthenticationService by inject()
@@ -38,15 +38,15 @@ suspend fun Route.refreshTokenRoute(call: RoutingCall) {
                 .build()
                 .verify(refreshToken)
 
-            val username = decodedJWT.claims[JwtClaimUsername]?.asString()?.let {
-                Username(it)
+            val userId = decodedJWT.claims[CLAIM_USER_ID]?.asString()?.let {
+                UUID.fromString(it)
             }
 
-            if (decodedJWT.expiresAt.before(Date()) || username == null) {
+            if (decodedJWT.expiresAt.before(Date()) || userId == null) {
                 call.respond(HttpStatusCode.Unauthorized)
             } else {
-                val newAccessToken = userAuthenticationService.generateAccessToken(username)
-                val newRefreshToken = userAuthenticationService.generateRefreshToken(username)
+                val newAccessToken = userAuthenticationService.generateAccessToken(userId)
+                val newRefreshToken = userAuthenticationService.generateRefreshToken(userId)
                 call.respond(
                     HttpStatusCode.OK,
                     TokenUiModel(

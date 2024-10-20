@@ -25,10 +25,9 @@
       ]
     },
     {
-      "allowedVersions": "<=4.26.1",
+      "allowedVersions": "3.4.3",
       "matchPackageNames": [
-        "/com.google.protobuf:protobuf-kotlin-lite/",
-        "/com.google.protobuf:protoc/"
+        "/^io.insert-koin/"
       ]
     }
   ]

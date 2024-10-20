@@ -1,9 +1,10 @@
 [versions]
 agp = "8.5.2"
 detekt = "1.23.7"
-ktor_version="3.0.0-rc-2"
+ktor_version="3.0.0"
 kotlin_version="2.0.20"
-koin_version= "3.5.6"
+koin_version= "3.4.3"
+kotest = "5.9.1"
 ksp = "2.0.10-1.0.24"
 logback_version="1.5.8"
 postgres_version="42.7.4"
@@ -18,6 +19,7 @@ jetbrains-exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao",
 jetbrains-exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposedVersion" }
 jetbrains-exposed-time = { group = "org.jetbrains.exposed", name = "exposed-java-time", version.ref = "exposedVersion" }
 jetbrains-kotlin-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin_version" }
+jetbrains-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin_version" }
 jetbrains-kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.7.3" }
 jetbrains-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.6.1"}
 
@@ -28,6 +30,8 @@ jsonpath = { group = "com.jayway.jsonpath", name = "json-path", version = "2.9.0
 h2 = { group = "com.h2database", name = "h2", version.ref = "h2_version" }
 
 koin-ktor = { group = "io.insert-koin", name = "koin-ktor", version.ref = "koin_version" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-assertions-json = { module = "io.kotest:kotest-assertions-json", version.ref = "kotest" }
 
 ktor-client-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor_version" }
 ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json-jvm", version.ref = "ktor_version" }
@@ -36,6 +40,7 @@ ktor-server-auth-jwt = { group = "io.ktor", name = "ktor-server-auth-jwt", versi
 ktor-server-calllogging = { group = "io.ktor", name = "ktor-server-call-logging-jvm", version.ref = "ktor_version" }
 ktor-server-contentnegotiation = { group = "io.ktor", name = "ktor-server-content-negotiation-jvm", version.ref = "ktor_version" }
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core-jvm", version.ref = "ktor_version" }
+ktor-server-tests = { group = "io.ktor", name = "ktor-server-tests", version.ref = "ktor_version" }
 ktor-server-hostcommon = { group = "io.ktor", name = "ktor-server-host-common-jvm", version.ref = "ktor_version" }
 ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty-jvm", version.ref = "ktor_version" }
 ktor-server-openapi = { group = "io.ktor", name = "ktor-server-openapi", version.ref = "ktor_version" }

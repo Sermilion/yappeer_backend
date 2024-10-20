@@ -13,10 +13,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-repositories {
-    mavenCentral()
-}
-
 kover {
     reports {
 
@@ -49,6 +45,16 @@ dependencies {
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
+
+    // temporary, until I figure out how to make tests run in their respective module
+    testImplementation(libs.jetbrains.exposed.dao)
+    testImplementation(libs.jetbrains.exposed.jdbc)
+    testImplementation(libs.jetbrains.exposed.time)
+    testImplementation(libs.jetbrains.kotlinx.datetime)
+
+    testImplementation(libs.ktor.server.testhost)
+    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation(libs.ktor.serialization)
 }
 
 tasks.test {

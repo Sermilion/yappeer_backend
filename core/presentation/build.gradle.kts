@@ -12,6 +12,7 @@ dependencies {
     implementation(libs.jetbrains.kotlinx.serialization)
     implementation(libs.jsonpath)
     implementation(libs.h2)
+    implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.auth.jwt)
     implementation(libs.ktor.server.calllogging)
     implementation(libs.ktor.server.contentnegotiation)

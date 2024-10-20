@@ -1,12 +1,16 @@
 package com.yappeer.di
 
 import com.yappeer.data.config.YappeerEnvironmentConfigProvider
-import com.yappeer.data.onboarding.datasource.YappeerUserCredentialsDataSource
+import com.yappeer.data.content.datasource.YappeerSubscriptionsDataSource
+import com.yappeer.data.content.repository.YappeerSubscriptionsRepository
+import com.yappeer.data.onboarding.datasource.YappeerUserDataSource
 import com.yappeer.data.onboarding.repository.YappeerOnboardingRepository
 import com.yappeer.data.onboarding.security.YappeerJwtTokenService
 import com.yappeer.data.onboarding.security.YappeerUserAuthenticationService
 import com.yappeer.domain.config.EnvironmentConfigProvider
-import com.yappeer.domain.onboarding.datasorce.UserCredentialsDataSource
+import com.yappeer.domain.content.datasource.SubscriptionsDataSource
+import com.yappeer.domain.content.repository.SubscriptionsRepository
+import com.yappeer.domain.onboarding.datasorce.UserDataSource
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
 import com.yappeer.domain.onboarding.security.JwtTokenService
 import com.yappeer.domain.onboarding.security.UserAuthenticationService
@@ -18,10 +22,12 @@ import org.koin.ktor.plugin.Koin
 fun Application.configureDi() {
     val appModule = module {
         single<EnvironmentConfigProvider> { YappeerEnvironmentConfigProvider() }
-        single<UserCredentialsDataSource> { YappeerUserCredentialsDataSource() }
+        single<UserDataSource> { YappeerUserDataSource() }
         single<OnboardingRepository> { YappeerOnboardingRepository(dataSource = get()) }
         single<UserAuthenticationService> { YappeerUserAuthenticationService(configProvider = get()) }
         single<JwtTokenService> { YappeerJwtTokenService() }
+        single<SubscriptionsDataSource> { YappeerSubscriptionsDataSource() }
+        single<SubscriptionsRepository> { YappeerSubscriptionsRepository(dataSource = get()) }
     }
 
     install(Koin) { modules(appModule) }

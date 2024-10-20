@@ -20,9 +20,12 @@ class KtorLibraryConventionPlugin : Plugin<Project> {
 
                     add("testImplementation", kotlin("test"))
                     add("testImplementation", libs.findLibrary("jetbrains.kotlin.junit").get())
+                    add("testImplementation", libs.findLibrary("jetbrains.kotlin.test").get())
                     add("testImplementation", libs.findLibrary("ktor.client.contentnegotiation").get())
                     add("testImplementation", libs.findLibrary("ktor.server.testhost").get())
                     add("testImplementation", libs.findLibrary("ktor.server.testhotsjvm").get())
+                    add("testImplementation", libs.findLibrary("kotest.assertions.core").get())
+                    add("testImplementation", libs.findLibrary("kotest.assertions.json").get())
                 }
             }
 

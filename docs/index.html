@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Oila API</title>
+  <title>YapPeer API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="UTF-8" />
@@ -689,17 +689,37 @@
   <script>
     // Script section to load models into a JS Var
     var defs = {}
+            defs["ErrorResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "code" : {
+      "type" : "string"
+    },
+    "details" : {
+      "type" : "array",
+      "items" : {
+        "type" : "object",
+        "properties" : {
+          "field" : {
+            "type" : "string"
+          },
+          "detail" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+};
             defs["LoginParams"] = {
   "required" : [ "password", "username" ],
   "type" : "object",
   "properties" : {
     "username" : {
-      "type" : "string",
-      "description" : "User's username"
+      "type" : "string"
     },
     "password" : {
-      "type" : "string",
-      "description" : "User's password"
+      "type" : "string"
     }
   }
 };
@@ -707,12 +727,10 @@
   "type" : "object",
   "properties" : {
     "accessToken" : {
-      "type" : "string",
-      "description" : "JWT access token"
+      "type" : "string"
     },
     "refreshToken" : {
-      "type" : "string",
-      "description" : "JWT refresh token"
+      "type" : "string"
     }
   }
 };
@@ -721,8 +739,7 @@
   "type" : "object",
   "properties" : {
     "username" : {
-      "type" : "string",
-      "description" : "User's username"
+      "type" : "string"
     }
   }
 };
@@ -739,7 +756,8 @@
       "type" : "string"
     },
     "avatar" : {
-      "type" : "string"
+      "type" : "string",
+      "nullable" : true
     }
   }
 };
@@ -747,26 +765,46 @@
   "type" : "object",
   "properties" : {
     "accessToken" : {
-      "type" : "string",
-      "description" : "New JWT access token"
+      "type" : "string"
     },
     "refreshToken" : {
+      "type" : "string"
+    }
+  }
+};
+            defs["RegisterResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "string"
+    },
+    "username" : {
+      "type" : "string"
+    },
+    "email" : {
+      "type" : "string"
+    },
+    "avatar" : {
       "type" : "string",
-      "description" : "New JWT refresh token"
+      "nullable" : true
     }
   }
 };
             defs["RegistrationParams"] = {
-  "required" : [ "password", "username" ],
+  "required" : [ "email", "password", "repeatPassword", "username" ],
   "type" : "object",
   "properties" : {
     "username" : {
-      "type" : "string",
-      "description" : "User's username"
+      "type" : "string"
     },
     "password" : {
-      "type" : "string",
-      "description" : "User's password"
+      "type" : "string"
+    },
+    "repeatPassword" : {
+      "type" : "string"
+    },
+    "email" : {
+      "type" : "string"
     }
   }
 };
@@ -796,8 +834,8 @@
                     <li data-group="Default" data-name="refreshTokenGet" class="">
                       <a href="#api-Default-refreshTokenGet">refreshTokenGet</a>
                     </li>
-                    <li data-group="Default" data-name="registrationPost" class="">
-                      <a href="#api-Default-registrationPost">registrationPost</a>
+                    <li data-group="Default" data-name="registerPost" class="">
+                      <a href="#api-Default-registerPost">registerPost</a>
                     </li>
                     <li data-group="Default" data-name="selfProfileGet" class="">
                       <a href="#api-Default-selfProfileGet">selfProfileGet</a>
@@ -808,7 +846,7 @@
       <div id="content">
         <div id="project">
           <div class="pull-left">
-            <h1>Oila API</h1>
+            <h1>YapPeer API</h1>
           </div>
           <div class="clearfix"></div>
         </div>
@@ -817,7 +855,7 @@
             <h2 id="welcome-to-apidoc">API and SDK Documentation</h2>
               <div class="app-desc">Version: 1.0</div>
             <hr>
-            <div>API documentation for the Oila application.</div>
+            <div>API documentation for the YapPeer application.</div>
           </div>
         </div>
         <div id="sections">
@@ -927,9 +965,9 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Default-loginPost-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var OilaApi = require('oila_api');
+                              <pre class="prettyprint"><code class="language-js">var YapPeerApi = require('yap_peer_api');
 
-var api = new OilaApi.DefaultApi()
+var api = new YapPeerApi.DefaultApi()
 var opts = { 
   'body':  // {{LoginParams}} 
 };
@@ -1131,20 +1169,52 @@ except ApiException as e:
                                 </div>
                             </div>
 
-                            <h3> Status: 400 - Invalid request body </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
                             <h3> Status: 401 - Unauthorized - Invalid credentials </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-loginPost-401-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-loginPost-401-schema">
+                                  <div id='responses-loginPost-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unauthorized - Invalid credentials",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-loginPost-401-schema-data').val(stringify(schema));
+                                        var result = $('#responses-loginPost-401-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-loginPost-401-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -1154,12 +1224,12 @@ except ApiException as e:
                       <article id="api-Default-profilePost-0" data-group="User" data-name="profilePost" data-version="0">
                         <div class="pull-left">
                           <h1>profilePost</h1>
-                          <p>Update user profile</p>
+                          <p>Load user profile</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Updates the authenticated user&#x27;s profile.</p>
+                        <p class="marked">Load a user profile by username.</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/profile</span></code></pre>
@@ -1184,6 +1254,7 @@ except ApiException as e:
                           <div class="tab-pane active" id="examples-Default-profilePost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
  -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json,text/plain"\
 -H "Content-Type: application/json"\
 "//profile"</code></pre>
                           </div>
@@ -1205,7 +1276,8 @@ public class DefaultApiExample {
         DefaultApi apiInstance = new DefaultApi();
         ProfileParams body = ; // ProfileParams | 
         try {
-            apiInstance.profilePost(body);
+            ProfileResponse result = apiInstance.profilePost(body);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#profilePost");
             e.printStackTrace();
@@ -1223,7 +1295,8 @@ public class DefaultApiExample {
         DefaultApi apiInstance = new DefaultApi();
         ProfileParams body = ; // ProfileParams | 
         try {
-            apiInstance.profilePost(body);
+            ProfileResponse result = apiInstance.profilePost(body);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#profilePost");
             e.printStackTrace();
@@ -1241,9 +1314,12 @@ ProfileParams *body = ; //  (optional)
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Update user profile
+// Load user profile
 [apiInstance profilePostWith:body
-              completionHandler: ^(NSError* error) {
+              completionHandler: ^(ProfileResponse output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -1252,11 +1328,11 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Default-profilePost-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var OilaApi = require('oila_api');
-var defaultClient = OilaApi.ApiClient.instance;
+                              <pre class="prettyprint"><code class="language-js">var YapPeerApi = require('yap_peer_api');
+var defaultClient = YapPeerApi.ApiClient.instance;
 
 
-var api = new OilaApi.DefaultApi()
+var api = new YapPeerApi.DefaultApi()
 var opts = { 
   'body':  // {{ProfileParams}} 
 };
@@ -1264,7 +1340,7 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
 api.profilePost(opts, callback);
@@ -1294,8 +1370,9 @@ namespace Example
 
             try
             {
-                // Update user profile
-                apiInstance.profilePost(body);
+                // Load user profile
+                ProfileResponse result = apiInstance.profilePost(body);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -1316,7 +1393,8 @@ $api_instance = new Swagger\Client\ApiDefaultApi();
 $body = ; // ProfileParams | 
 
 try {
-    $api_instance->profilePost($body);
+    $result = $api_instance->profilePost($body);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling DefaultApi->profilePost: ', $e->getMessage(), PHP_EOL;
 }
@@ -1333,7 +1411,8 @@ my $api_instance = WWW::SwaggerClient::DefaultApi->new();
 my $body = WWW::SwaggerClient::Object::ProfileParams->new(); # ProfileParams | 
 
 eval { 
-    $api_instance->profilePost(body => $body);
+    my $result = $api_instance->profilePost(body => $body);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling DefaultApi->profilePost: $@\n";
@@ -1353,8 +1432,9 @@ api_instance = swagger_client.DefaultApi()
 body =  # ProfileParams |  (optional)
 
 try: 
-    # Update user profile
-    api_instance.profile_post(body=body)
+    # Load user profile
+    api_response = api_instance.profile_post(body=body)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling DefaultApi->profilePost: %s\n" % e)</code></pre>
                             </div>
@@ -1410,23 +1490,104 @@ except ApiException as e:
 
 
                           <h2>Responses</h2>
-                            <h3> Status: 200 - Profile updated successfully </h3>
+                            <h3> Status: 200 - Profile loaded successfully </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-profilePost-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-profilePost-200-schema">
+                                  <div id='responses-profilePost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Profile loaded successfully",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ProfileResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-profilePost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-profilePost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-profilePost-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
-                            <h3> Status: 400 - Invalid request body </h3>
+                            <h3> Status: 400 - Invalid username is provided </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-profilePost-400-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-profilePost-400-schema">
+                                  <div id='responses-profilePost-400-schema-400' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Invalid username is provided",
+  "content" : {
+    "text/plain" : {
+      "schema" : {
+        "type" : "string",
+        "x-content-type" : "text/plain"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["text/plain"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-profilePost-400-schema-data').val(stringify(schema));
+                                        var result = $('#responses-profilePost-400-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-profilePost-400-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
-                            <h3> Status: 401 - Unauthorized - Missing or invalid JWT token </h3>
+                            <h3> Status: 404 - Profile for the given username not found </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
@@ -1541,11 +1702,11 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Default-refreshTokenGet-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var OilaApi = require('oila_api');
-var defaultClient = OilaApi.ApiClient.instance;
+                              <pre class="prettyprint"><code class="language-js">var YapPeerApi = require('yap_peer_api');
+var defaultClient = YapPeerApi.ApiClient.instance;
 
 
-var api = new OilaApi.DefaultApi()
+var api = new YapPeerApi.DefaultApi()
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -1713,10 +1874,10 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
-                    <div id="api-Default-registrationPost">
-                      <article id="api-Default-registrationPost-0" data-group="User" data-name="registrationPost" data-version="0">
+                    <div id="api-Default-registerPost">
+                      <article id="api-Default-registerPost-0" data-group="User" data-name="registerPost" data-version="0">
                         <div class="pull-left">
-                          <h1>registrationPost</h1>
+                          <h1>registerPost</h1>
                           <p>User registration</p>
                         </div>
                         <div class="pull-right"></div>
@@ -1725,31 +1886,32 @@ except ApiException as e:
                         <p class="marked">Registers a new user.</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/registration</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/register</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-registrationPost-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-registrationPost-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-registrationPost-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-registrationPost-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-registrationPost-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-registrationPost-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-registrationPost-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-registrationPost-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-registrationPost-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-registrationPost-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-registrationPost-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-Default-registerPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-registerPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-registerPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-registerPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-registerPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-registerPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-registerPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-registerPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-registerPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-registerPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-registerPost-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-registrationPost-0-curl">
+                          <div class="tab-pane active" id="examples-Default-registerPost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+-H "Accept: application/json"\
 -H "Content-Type: application/json"\
-"//registration"</code></pre>
+"//register"</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Default-registrationPost-0-java">
+                          <div class="tab-pane" id="examples-Default-registerPost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -1765,16 +1927,17 @@ public class DefaultApiExample {
         DefaultApi apiInstance = new DefaultApi();
         RegistrationParams body = ; // RegistrationParams | 
         try {
-            apiInstance.registrationPost(body);
+            RegisterResponse result = apiInstance.registerPost(body);
+            System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#registrationPost");
+            System.err.println("Exception when calling DefaultApi#registerPost");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Default-registrationPost-0-android">
+                          <div class="tab-pane" id="examples-Default-registerPost-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
 
 public class DefaultApiExample {
@@ -1783,26 +1946,30 @@ public class DefaultApiExample {
         DefaultApi apiInstance = new DefaultApi();
         RegistrationParams body = ; // RegistrationParams | 
         try {
-            apiInstance.registrationPost(body);
+            RegisterResponse result = apiInstance.registerPost(body);
+            System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#registrationPost");
+            System.err.println("Exception when calling DefaultApi#registerPost");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Default-registrationPost-0-groovy">
+  <div class="tab-pane" id="examples-Default-registerPost-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Default-registrationPost-0-objc">
+                            <div class="tab-pane" id="examples-Default-registerPost-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">RegistrationParams *body = ; //  (optional)
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
 // User registration
-[apiInstance registrationPostWith:body
-              completionHandler: ^(NSError* error) {
+[apiInstance registerPostWith:body
+              completionHandler: ^(RegisterResponse output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -1810,10 +1977,10 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-registrationPost-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var OilaApi = require('oila_api');
+                            <div class="tab-pane" id="examples-Default-registerPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var YapPeerApi = require('yap_peer_api');
 
-var api = new OilaApi.DefaultApi()
+var api = new YapPeerApi.DefaultApi()
 var opts = { 
   'body':  // {{RegistrationParams}} 
 };
@@ -1821,17 +1988,17 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.registrationPost(opts, callback);
+api.registerPost(opts, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Default-registrationPost-0-angular">
+                            <!--<div class="tab-pane" id="examples-Default-registerPost-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Default-registrationPost-0-csharp">
+                            <div class="tab-pane" id="examples-Default-registerPost-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -1840,7 +2007,7 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class registrationPostExample
+    public class registerPostExample
     {
         public void main()
         {
@@ -1851,11 +2018,12 @@ namespace Example
             try
             {
                 // User registration
-                apiInstance.registrationPost(body);
+                RegisterResponse result = apiInstance.registerPost(body);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling DefaultApi.registrationPost: " + e.Message );
+                Debug.Print("Exception when calling DefaultApi.registerPost: " + e.Message );
             }
         }
     }
@@ -1863,7 +2031,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-registrationPost-0-php">
+                            <div class="tab-pane" id="examples-Default-registerPost-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -1871,14 +2039,15 @@ $api_instance = new Swagger\Client\ApiDefaultApi();
 $body = ; // RegistrationParams | 
 
 try {
-    $api_instance->registrationPost($body);
+    $result = $api_instance->registerPost($body);
+    print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->registrationPost: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling DefaultApi->registerPost: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-registrationPost-0-perl">
+                            <div class="tab-pane" id="examples-Default-registerPost-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
@@ -1887,14 +2056,15 @@ my $api_instance = WWW::SwaggerClient::DefaultApi->new();
 my $body = WWW::SwaggerClient::Object::RegistrationParams->new(); # RegistrationParams | 
 
 eval { 
-    $api_instance->registrationPost(body => $body);
+    my $result = $api_instance->registerPost(body => $body);
+    print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling DefaultApi->registrationPost: $@\n";
+    warn "Exception when calling DefaultApi->registerPost: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-registrationPost-0-python">
+                            <div class="tab-pane" id="examples-Default-registerPost-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -1907,9 +2077,10 @@ body =  # RegistrationParams |  (optional)
 
 try: 
     # User registration
-    api_instance.registration_post(body=body)
+    api_response = api_instance.register_post(body=body)
+    pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DefaultApi->registrationPost: %s\n" % e)</code></pre>
+    print("Exception when calling DefaultApi->registerPost: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -1950,12 +2121,12 @@ except ApiException as e:
                                   }
                                 
                                   var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_registrationPost_body');
+                                  var result = $('#d2e199_registerPost_body');
                                   result.empty();
                                   result.append(view.render());
                                 });
                                 </script>
-                                <div id="d2e199_registrationPost_body"></div>
+                                <div id="d2e199_registerPost_body"></div>
                                 </td>
                                 </tr>
                             </table>
@@ -1966,17 +2137,145 @@ except ApiException as e:
                             <h3> Status: 201 - User registered successfully </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-registerPost-201-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-registerPost-201-schema">
+                                  <div id='responses-registerPost-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "User registered successfully",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/RegisterResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-registerPost-201-schema-data').val(stringify(schema));
+                                        var result = $('#responses-registerPost-201-schema-201');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-registerPost-201-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
-                            <h3> Status: 400 - Invalid request body or user already exists </h3>
+                            <h3> Status: 400 - Invalid request body </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-registerPost-400-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-registerPost-400-schema">
+                                  <div id='responses-registerPost-400-schema-400' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Invalid request body",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-registerPost-400-schema-data').val(stringify(schema));
+                                        var result = $('#responses-registerPost-400-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-registerPost-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 409 - Username or email already taken </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-registerPost-409-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-registerPost-409-schema">
+                                  <div id='responses-registerPost-409-schema-409' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Username or email already taken",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-registerPost-409-schema-data').val(stringify(schema));
+                                        var result = $('#responses-registerPost-409-schema-409');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-registerPost-409-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -1994,7 +2293,7 @@ except ApiException as e:
                         <p class="marked">Retrieves the authenticated user&#x27;s profile.</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/self-profile</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/self_profile</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -2017,7 +2316,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
  -H "Authorization: Bearer [[accessToken]]"\
 -H "Accept: application/json"\
-"//self-profile"</code></pre>
+"//self_profile"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Default-selfProfileGet-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -2086,11 +2385,11 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Default-selfProfileGet-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var OilaApi = require('oila_api');
-var defaultClient = OilaApi.ApiClient.instance;
+                              <pre class="prettyprint"><code class="language-js">var YapPeerApi = require('yap_peer_api');
+var defaultClient = YapPeerApi.ApiClient.instance;
 
 
-var api = new OilaApi.DefaultApi()
+var api = new YapPeerApi.DefaultApi()
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -2247,7 +2546,23 @@ except ApiException as e:
                                 </div>
                             </div>
 
+                            <h3> Status: 404 - User for given token not found </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
                             <h3> Status: 401 - Unauthorized - Missing or invalid JWT token </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 400 - Invalid username for given token </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
