@@ -1,10 +1,11 @@
 package com.yappeer.presentation.routes.feature.profile
 
-import com.yappeer.domain.content.model.FollowersResult
+import com.yappeer.domain.content.model.TagsResult
 import com.yappeer.domain.content.repository.SubscriptionsRepository
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.presentation.routes.model.mapper.FollowersResponseMapper.toUiModel
-import com.yappeer.presentation.routes.model.param.UserSubscriptionsParams
+import com.yappeer.presentation.routes.model.mapper.TagsResponseMapper.toUiModel
+import com.yappeer.presentation.routes.model.param.UserTagsParams
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -14,26 +15,24 @@ import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-internal const val FollowersUsersRoute = "/followers_users"
+internal const val FollowingTagsRoute = "/tags"
 
-suspend fun Route.followersUsersRoute(call: RoutingCall) {
+suspend fun Route.followingTagsRoute(call: RoutingCall) {
     val repository: SubscriptionsRepository by inject()
 
-    val logger = LoggerFactory.getLogger(FollowersUsersRoute)
-    val request = call.receive<UserSubscriptionsParams>()
+    val logger = LoggerFactory.getLogger(FollowingTagsRoute)
+    val request = call.receive<UserTagsParams>()
 
     try {
-        val result = repository.findFollowers(
+        val result = repository.findFollowedTags(
             userId = UUID.fromString(request.userId),
             page = request.page,
             pageSize = request.pageSize,
         )
 
         when (result) {
-            is FollowersResult.Data -> {
-                call.respond(HttpStatusCode.OK, result.toUiModel())
-            }
-            FollowersResult.Error -> call.respond(HttpStatusCode.InternalServerError)
+            is TagsResult.Data -> call.respond(HttpStatusCode.OK, result.toUiModel())
+            TagsResult.Error -> call.respond(HttpStatusCode.InternalServerError)
         }
     } catch (e: ValueValidationException) {
         val message = "Validation error for value type ${e.valueType}"

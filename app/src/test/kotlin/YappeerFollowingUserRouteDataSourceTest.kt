@@ -8,7 +8,7 @@ import com.yappeer.data.content.datasource.db.dao.UserUserSubsTable
 import com.yappeer.data.onboarding.datasource.db.dao.UserDAO
 import com.yappeer.data.onboarding.datasource.db.dao.UserTable
 import com.yappeer.domain.content.model.FollowersResult
-import com.yappeer.domain.content.model.TagResult
+import com.yappeer.domain.content.model.TagsResult
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -142,7 +142,7 @@ class YappeerFollowingUserRouteDataSourceTest {
         )
 
         // Then
-        result.shouldBeInstanceOf<TagResult.Data>()
+        result.shouldBeInstanceOf<TagsResult.Data>()
         result.tags shouldHaveSize 2
         result.pagesCount shouldBe 1
         result.currentPage shouldBe 1

@@ -10,7 +10,7 @@ import com.yappeer.data.onboarding.mapper.TagDaoMapper.toDomainModel
 import com.yappeer.data.onboarding.mapper.UserDaoMapper.toDomainModel
 import com.yappeer.domain.content.datasource.SubscriptionsDataSource
 import com.yappeer.domain.content.model.FollowersResult
-import com.yappeer.domain.content.model.TagResult
+import com.yappeer.domain.content.model.TagsResult
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.andWhere
@@ -86,7 +86,7 @@ class YappeerSubscriptionsDataSource : SubscriptionsDataSource {
         }
     }
 
-    override fun findFollowedTags(userId: UUID, page: Int, pageSize: Int): TagResult {
+    override fun findFollowedTags(userId: UUID, page: Int, pageSize: Int): TagsResult {
         return try {
             transaction {
                 val totalTags = (
@@ -111,12 +111,17 @@ class YappeerSubscriptionsDataSource : SubscriptionsDataSource {
                     val followerCount = it[UserTagSubsTable.userId.count()]
                     TagDAO.wrapRow(it).toDomainModel(followerCount)
                 }
-                TagResult.Data(result, pagesCount, page)
+                TagsResult.Data(
+                    tags = result,
+                    pagesCount = pagesCount,
+                    currentPage = page,
+                    totalTagCount = totalTags,
+                )
             }
         } catch (e: ExposedSQLException) {
             val message = "Error fetching tags."
             logger.error(message, e)
-            TagResult.Error
+            TagsResult.Error
         }
     }
 }

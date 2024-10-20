@@ -2,7 +2,7 @@ package com.yappeer.data.content.repository
 
 import com.yappeer.domain.content.datasource.SubscriptionsDataSource
 import com.yappeer.domain.content.model.FollowersResult
-import com.yappeer.domain.content.model.TagResult
+import com.yappeer.domain.content.model.TagsResult
 import com.yappeer.domain.content.repository.SubscriptionsRepository
 import java.util.UUID
 
@@ -17,7 +17,7 @@ class YappeerSubscriptionsRepository(
         return dataSource.findFollowing(userId, page, pageSize)
     }
 
-    override fun findFollowedTags(userId: UUID, page: Int, pageSize: Int): TagResult {
+    override fun findFollowedTags(userId: UUID, page: Int, pageSize: Int): TagsResult {
         return dataSource.findFollowedTags(userId, page, pageSize)
     }
 }
