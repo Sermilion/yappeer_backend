@@ -3,7 +3,6 @@ package com.yappeer.presentation.routes.feature.profile
 import com.yappeer.domain.content.model.TagsResult
 import com.yappeer.domain.content.repository.SubscriptionsRepository
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
-import com.yappeer.presentation.routes.model.mapper.FollowersResponseMapper.toUiModel
 import com.yappeer.presentation.routes.model.mapper.TagsResponseMapper.toUiModel
 import com.yappeer.presentation.routes.model.param.UserTagsParams
 import io.ktor.http.HttpStatusCode
@@ -15,12 +14,12 @@ import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-internal const val FollowingTagsRoute = "/tags"
+internal const val TagsRoute = "/tags"
 
-suspend fun Route.followingTagsRoute(call: RoutingCall) {
+suspend fun Route.tagsRoute(call: RoutingCall) {
     val repository: SubscriptionsRepository by inject()
 
-    val logger = LoggerFactory.getLogger(FollowingTagsRoute)
+    val logger = LoggerFactory.getLogger(TagsRoute)
     val request = call.receive<UserTagsParams>()
 
     try {

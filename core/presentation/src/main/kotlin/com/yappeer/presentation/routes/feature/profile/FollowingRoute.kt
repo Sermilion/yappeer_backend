@@ -14,16 +14,16 @@ import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-internal const val FollowersUsersRoute = "/followers_users"
+internal const val FollowingRoute = "/following"
 
-suspend fun Route.followersUsersRoute(call: RoutingCall) {
+suspend fun Route.followingRoute(call: RoutingCall) {
     val repository: SubscriptionsRepository by inject()
 
-    val logger = LoggerFactory.getLogger(FollowersUsersRoute)
+    val logger = LoggerFactory.getLogger(UserProfileRoute)
     val request = call.receive<UserSubscriptionsParams>()
 
     try {
-        val result = repository.findFollowers(
+        val result = repository.findFollowing(
             userId = UUID.fromString(request.userId),
             page = request.page,
             pageSize = request.pageSize,
