@@ -126,7 +126,7 @@ paths:
   /followers:
     post:
       summary: Get followers list
-      description: List of users that a user follows
+      description: List of users that a user is followed by
       security:
         - bearerAuth: []
       requestBody:
@@ -137,6 +137,29 @@ paths:
       responses:
         '200':
           description: Followers retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowersResponse'
+        '400':
+          description: Bad request - Invalid request body
+        '500':
+          description: Internal server error
+
+  /following:
+    post:
+      summary: Get following list
+      description: List of users that a user is following
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSubscriptionsParams'
+      responses:
+        '200':
+          description: Following users list retrieved successfully
           content:
             application/json:
               schema:
