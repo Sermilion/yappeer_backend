@@ -15,14 +15,14 @@ import kotlinx.datetime.Clock
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 
-internal const val LoginRoute = "/login"
-private const val ErrorTypeInvalidCredentials = "InvalidCredentials"
+internal const val LOGIN_ROUTE = "/login"
+private const val ERROR_TYPE_INVALID_CREDENTIALS = "InvalidCredentials"
 
 suspend fun Route.loginRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()
     val userAuthenticationService: UserAuthenticationService by inject()
 
-    val logger = LoggerFactory.getLogger(LoginRoute)
+    val logger = LoggerFactory.getLogger(LOGIN_ROUTE)
     val params = call.receive<LoginParams>()
 
     try {
@@ -49,7 +49,7 @@ suspend fun Route.loginRoute(call: RoutingCall) {
 
 private fun createInvalidCredentialsError(): ErrorResponse {
     return ErrorResponse(
-        code = ErrorTypeInvalidCredentials,
+        code = ERROR_TYPE_INVALID_CREDENTIALS,
         details = emptyList(),
     )
 }

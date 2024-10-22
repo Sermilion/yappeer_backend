@@ -1,16 +1,16 @@
 package com.yappeer.presentation.plugins
 
-import com.yappeer.presentation.routes.feature.onboarding.LoginRoute
-import com.yappeer.presentation.routes.feature.onboarding.RefreshTokenRoute
-import com.yappeer.presentation.routes.feature.onboarding.RegistrationRoute
+import com.yappeer.presentation.routes.feature.onboarding.LOGIN_ROUTE
+import com.yappeer.presentation.routes.feature.onboarding.REFRESH_TOKEN_ROUTE
+import com.yappeer.presentation.routes.feature.onboarding.REGISTRATION_ROUTE
 import com.yappeer.presentation.routes.feature.onboarding.loginRoute
 import com.yappeer.presentation.routes.feature.onboarding.refreshTokenRoute
 import com.yappeer.presentation.routes.feature.onboarding.registrationRoute
-import com.yappeer.presentation.routes.feature.profile.FollowersRoute
-import com.yappeer.presentation.routes.feature.profile.FollowingRoute
-import com.yappeer.presentation.routes.feature.profile.SelfProfileRoute
-import com.yappeer.presentation.routes.feature.profile.TagsRoute
-import com.yappeer.presentation.routes.feature.profile.UserProfileRoute
+import com.yappeer.presentation.routes.feature.profile.FOLLOWERS_ROUTE
+import com.yappeer.presentation.routes.feature.profile.FOLLOWING_ROUTE
+import com.yappeer.presentation.routes.feature.profile.SELF_PROFILE_ROUTE
+import com.yappeer.presentation.routes.feature.profile.TAGS_ROUTE
+import com.yappeer.presentation.routes.feature.profile.USER_PROFILE_ROUTE
 import com.yappeer.presentation.routes.feature.profile.followersRoute
 import com.yappeer.presentation.routes.feature.profile.followingRoute
 import com.yappeer.presentation.routes.feature.profile.selfProfileRoute
@@ -32,16 +32,16 @@ fun Application.configureRouting() {
 
     routing {
         openAPI(path = "openapi", swaggerFile = "config/openapi/documentation.yaml")
-        post(LoginRoute) { loginRoute(call) }
-        post(RegistrationRoute) { registrationRoute(call) }
+        post(LOGIN_ROUTE) { loginRoute(call) }
+        post(REGISTRATION_ROUTE) { registrationRoute(call) }
 
-        authenticate(AuthenticationIdentifier) {
-            get(UserProfileRoute) { userProfileRoute(call) }
-            get(SelfProfileRoute) { selfProfileRoute(call) }
-            get(RefreshTokenRoute) { refreshTokenRoute(call) }
-            post(FollowersRoute) { followersRoute(call) }
-            post(FollowingRoute) { followingRoute(call) }
-            post(TagsRoute) { tagsRoute(call) }
+        authenticate(AUTHENTICATION_IDENTIFIER) {
+            get(USER_PROFILE_ROUTE) { userProfileRoute(call) }
+            get(SELF_PROFILE_ROUTE) { selfProfileRoute(call) }
+            get(REFRESH_TOKEN_ROUTE) { refreshTokenRoute(call) }
+            post(FOLLOWERS_ROUTE) { followersRoute(call) }
+            post(FOLLOWING_ROUTE) { followingRoute(call) }
+            post(TAGS_ROUTE) { tagsRoute(call) }
         }
     }
 }

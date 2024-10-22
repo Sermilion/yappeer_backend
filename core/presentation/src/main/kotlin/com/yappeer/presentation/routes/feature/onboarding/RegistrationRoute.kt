@@ -17,14 +17,14 @@ import io.ktor.server.routing.RoutingCall
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 
-internal const val RegistrationRoute = "/register"
-private const val ErrorTypeValidation = "ValidationError"
-private const val ErrorTypePasswordMatch = "PasswordMatch"
+internal const val REGISTRATION_ROUTE = "/register"
+private const val ERROR_TYPE_VALIDATION = "ValidationError"
+private const val ERROR_TYPE_PASSWORD_MATCH = "PasswordMatch"
 
 suspend fun Route.registrationRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()
     val userAuthenticationService: UserAuthenticationService by inject()
-    val logger = LoggerFactory.getLogger(RegistrationRoute::class.java)
+    val logger = LoggerFactory.getLogger(REGISTRATION_ROUTE::class.java)
     val request = call.receive<RegisterParams>()
 
     try {
@@ -34,7 +34,7 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
         if (password != repeatPassword) {
             call.respond(
                 HttpStatusCode.BadRequest,
-                ErrorResponse(code = ErrorTypePasswordMatch, details = emptyList()),
+                ErrorResponse(code = ERROR_TYPE_PASSWORD_MATCH, details = emptyList()),
             )
         }
 
@@ -62,7 +62,7 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
     } catch (e: ValueValidationException) {
         logger.info("Validation error for value type ${e.valueType}", e)
         val response = ErrorResponse(
-            code = ErrorTypeValidation,
+            code = ERROR_TYPE_VALIDATION,
             details = listOf(e.valueType).toPresentationModel(),
         )
         call.respond(HttpStatusCode.BadRequest, response)
