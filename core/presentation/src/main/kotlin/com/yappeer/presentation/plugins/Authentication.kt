@@ -14,11 +14,11 @@ import io.ktor.server.response.respond
 import org.h2.util.SortedProperties.loadProperties
 import java.util.Date
 
-const val AuthenticationIdentifier = "auth-jwt"
+const val AUTHENTICATION_IDENTIFIER = "auth-jwt"
 
 fun Application.configureAuthentication() {
     install(Authentication) {
-        jwt(AuthenticationIdentifier) {
+        jwt(AUTHENTICATION_IDENTIFIER) {
             val properties = loadProperties("local.properties")
             val secret = properties.getProperty("jwt.secret")
 

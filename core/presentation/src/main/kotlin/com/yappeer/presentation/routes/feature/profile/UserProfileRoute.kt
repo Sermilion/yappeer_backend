@@ -11,15 +11,15 @@ import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-internal const val UserProfileRoute = "/user_profile"
-private const val UserIdParam = "user_id"
+internal const val USER_PROFILE_ROUTE = "/user_profile"
+private const val USER_ID_PARAM = "user_id"
 
 suspend fun Route.userProfileRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()
 
-    val logger = LoggerFactory.getLogger(UserProfileRoute)
+    val logger = LoggerFactory.getLogger(USER_PROFILE_ROUTE)
 
-    val userId = call.request.queryParameters[UserIdParam]?.let {
+    val userId = call.request.queryParameters[USER_ID_PARAM]?.let {
         UUID.fromString(it)
     }
 

@@ -14,12 +14,12 @@ import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-internal const val TagsRoute = "/tags"
+internal const val TAGS_ROUTE = "/tags"
 
 suspend fun Route.tagsRoute(call: RoutingCall) {
     val repository: SubscriptionsRepository by inject()
 
-    val logger = LoggerFactory.getLogger(TagsRoute)
+    val logger = LoggerFactory.getLogger(TAGS_ROUTE)
     val request = call.receive<UserTagsParams>()
 
     try {

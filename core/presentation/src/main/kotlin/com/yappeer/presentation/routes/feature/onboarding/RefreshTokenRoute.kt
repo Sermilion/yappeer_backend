@@ -18,20 +18,20 @@ import org.slf4j.LoggerFactory
 import java.util.Date
 import java.util.UUID
 
-internal const val RefreshTokenRoute = "/refresh_token"
-private const val HeaderAuthorization = "Authorization"
-private const val HeaderBearer = "Bearer "
+internal const val REFRESH_TOKEN_ROUTE = "/refresh_token"
+private const val HEADER_AUTHORIZATION = "Authorization"
+private const val HEADER_BEARER = "Bearer "
 
 suspend fun Route.refreshTokenRoute(call: RoutingCall) {
     val userAuthenticationService: UserAuthenticationService by inject()
     val tokeService: JwtTokenService by inject()
 
-    val logger = LoggerFactory.getLogger(RefreshTokenRoute)
+    val logger = LoggerFactory.getLogger(REFRESH_TOKEN_ROUTE)
 
     val jwtSecret = tokeService.loadJwtSecret()
 
     try {
-        val refreshToken = call.request.header(HeaderAuthorization)?.substringAfter(HeaderBearer)
+        val refreshToken = call.request.header(HEADER_AUTHORIZATION)?.substringAfter(HEADER_BEARER)
         if (refreshToken != null) {
             // use ECDSA512 instead
             val decodedJWT = JWT.require(Algorithm.HMAC256(jwtSecret))
