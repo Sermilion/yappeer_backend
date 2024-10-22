@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PaginationUiModel(
-    val totalUserCount: Long,
+    val totalCount: Long,
     val pagesCount: Long,
     val currentPage: Int,
 )

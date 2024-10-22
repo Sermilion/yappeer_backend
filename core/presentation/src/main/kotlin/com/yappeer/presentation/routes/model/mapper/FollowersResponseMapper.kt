@@ -11,7 +11,7 @@ internal object FollowersResponseMapper {
         return FollowersUiModel(
             users = this.users.map { it.toUiModel() },
             pagination = PaginationUiModel(
-                totalUserCount = this.totalUserCount,
+                totalCount = this.totalUserCount,
                 pagesCount = this.pagesCount,
                 currentPage = this.currentPage,
             ),

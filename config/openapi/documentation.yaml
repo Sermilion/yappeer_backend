@@ -169,6 +169,29 @@ paths:
         '500':
           description: Internal server error
 
+  /tags:
+    post:
+      summary: Get followed tags list
+      description: List of tags that a user is following
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserTagsParams'
+      responses:
+        '200':
+          description: Followed tags retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagsResponse'
+        '400':
+          description: Bad request - Invalid request body
+        '500':
+          description: Internal server error
+
 components:
   securitySchemes:
     bearerAuth:
@@ -330,3 +353,43 @@ components:
         pageSize:
           type: integer
           description: Number of items per page
+
+    UserTagsParams:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: ID of the user whose followed tags to retrieve
+        page:
+          type: integer
+          description: Page number for pagination
+        pageSize:
+          type: integer
+          description: Number of items per page
+      required:
+        - userId
+        - page
+        - pageSize
+
+    TagsResponse:
+      type: object
+      properties:
+        tags:
+          type: array
+          description: List of followed tags
+          items:
+            $ref: '#/components/schemas/Tag'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Tag ID
+        name:
+          type: string
+          description: Tag name
