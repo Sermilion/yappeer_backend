@@ -107,7 +107,7 @@ paths:
         '400':
           description: Invalid username for given token
 
-  /refresh-token:
+  /refresh_token:
     get:
       summary: Refresh JWT token
       description: Generates a new JWT token using a refresh token.
@@ -122,6 +122,29 @@ paths:
                 $ref: '#/components/schemas/RefreshTokenResponse'
         '401':
           description: Unauthorized - Invalid or expired refresh token
+
+  /followers:
+    post:
+      summary: Get followers list
+      description: List of users that a user follows
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSubscriptionsParams'
+      responses:
+        '200':
+          description: Followers retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowersResponse'
+        '400':
+          description: Bad request - Invalid request body
+        '500':
+          description: Internal server error
 
 components:
   securitySchemes:
@@ -224,3 +247,63 @@ components:
           type: string
         refreshToken:
           type: string
+
+    UserSubscriptionsParams:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: ID of the user whose followers to retrieve
+        page:
+          type: integer
+          description: Page number for pagination
+        pageSize:
+          type: integer
+          description: Number of items per page
+      required:
+        - userId
+        - page
+        - pageSize
+
+    FollowersResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          description: List of followers
+          items:
+            $ref: '#/components/schemas/User'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User ID
+        username:
+          type: string
+          description: User's username
+        email:
+          type: string
+          description: User's email address
+        avatar:
+          type: string
+          nullable: true
+          description: URL of the user's avatar image
+
+    Pagination:
+      type: object
+      properties:
+        currentPage:
+          type: integer
+          description: Current page number
+        totalPages:
+          type: integer
+          description: Total number of pages
+        pageSize:
+          type: integer
+          description: Number of items per page
