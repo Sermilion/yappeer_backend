@@ -1,6 +1,6 @@
 package com.yappeer.presentation.routes.model.mapper
 
-import com.yappeer.domain.content.model.FollowersResult
+import com.yappeer.domain.subscriptions.model.FollowersResult
 import com.yappeer.presentation.routes.model.mapper.UserResponseMapper.toUiModel
 import com.yappeer.presentation.routes.model.ui.FollowersUiModel
 import com.yappeer.presentation.routes.model.ui.PaginationUiModel

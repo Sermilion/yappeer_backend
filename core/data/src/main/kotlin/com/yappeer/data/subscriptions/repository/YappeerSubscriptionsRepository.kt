@@ -1,9 +1,9 @@
-package com.yappeer.data.content.repository
+package com.yappeer.data.subscriptions.repository
 
-import com.yappeer.domain.content.datasource.SubscriptionsDataSource
-import com.yappeer.domain.content.model.FollowersResult
-import com.yappeer.domain.content.model.TagsResult
-import com.yappeer.domain.content.repository.SubscriptionsRepository
+import com.yappeer.domain.subscriptions.datasource.SubscriptionsDataSource
+import com.yappeer.domain.subscriptions.model.FollowersResult
+import com.yappeer.domain.subscriptions.model.TagsResult
+import com.yappeer.domain.subscriptions.repository.SubscriptionsRepository
 import java.util.UUID
 
 class YappeerSubscriptionsRepository(

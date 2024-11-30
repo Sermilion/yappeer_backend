@@ -1,5 +1,7 @@
 package com.yappeer.presentation.plugins
 
+import com.yappeer.presentation.routes.feature.communities.USER_POSTS_ROUTE
+import com.yappeer.presentation.routes.feature.communities.userPostsRoute
 import com.yappeer.presentation.routes.feature.onboarding.LOGIN_ROUTE
 import com.yappeer.presentation.routes.feature.onboarding.REFRESH_TOKEN_ROUTE
 import com.yappeer.presentation.routes.feature.onboarding.REGISTRATION_ROUTE
@@ -42,6 +44,7 @@ fun Application.configureRouting() {
             post(FOLLOWERS_ROUTE) { followersRoute(call) }
             post(FOLLOWING_ROUTE) { followingRoute(call) }
             post(TAGS_ROUTE) { tagsRoute(call) }
+            post(USER_POSTS_ROUTE) { userPostsRoute(call) }
         }
     }
 }

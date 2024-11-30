@@ -1,8 +1,8 @@
 package com.yappeer.presentation.routes.feature.profile
 
-import com.yappeer.domain.content.model.FollowersResult
-import com.yappeer.domain.content.repository.SubscriptionsRepository
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
+import com.yappeer.domain.subscriptions.model.FollowersResult
+import com.yappeer.domain.subscriptions.repository.SubscriptionsRepository
 import com.yappeer.presentation.routes.model.mapper.FollowersResponseMapper.toUiModel
 import com.yappeer.presentation.routes.model.param.UserSubscriptionsParams
 import io.ktor.http.HttpStatusCode
