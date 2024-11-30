@@ -14,12 +14,12 @@ import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-internal const val SELF_PROFILE_ROUTE = "/self_profile"
+internal const val USER_POSTS_ROUTE = "/user_posts"
 
 suspend fun Route.selfProfileRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()
 
-    val logger = LoggerFactory.getLogger(SELF_PROFILE_ROUTE)
+    val logger = LoggerFactory.getLogger(USER_POSTS_ROUTE)
 
     val principal = call.principal<JWTPrincipal>()
     val userId = principal?.payload?.getClaim(CLAIM_USER_ID)?.asString()?.let {

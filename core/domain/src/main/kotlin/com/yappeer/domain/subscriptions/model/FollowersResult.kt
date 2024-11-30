@@ -1,4 +1,4 @@
-package com.yappeer.domain.content.model
+package com.yappeer.domain.subscriptions.model
 
 import com.yappeer.domain.onboarding.model.User
 

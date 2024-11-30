@@ -1,10 +1,10 @@
 package com.yappeer.presentation.routes.feature.profile
 
-import com.yappeer.domain.content.model.TagsResult
-import com.yappeer.domain.content.repository.SubscriptionsRepository
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
+import com.yappeer.domain.subscriptions.model.TagsResult
+import com.yappeer.domain.subscriptions.repository.SubscriptionsRepository
 import com.yappeer.presentation.routes.model.mapper.TagsResponseMapper.toUiModel
-import com.yappeer.presentation.routes.model.param.UserTagsParams
+import com.yappeer.presentation.routes.model.param.UserSubscriptionsParams
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -20,7 +20,7 @@ suspend fun Route.tagsRoute(call: RoutingCall) {
     val repository: SubscriptionsRepository by inject()
 
     val logger = LoggerFactory.getLogger(TAGS_ROUTE)
-    val request = call.receive<UserTagsParams>()
+    val request = call.receive<UserSubscriptionsParams>()
 
     try {
         val result = repository.findFollowedTags(

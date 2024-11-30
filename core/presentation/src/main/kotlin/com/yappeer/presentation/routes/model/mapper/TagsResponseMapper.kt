@@ -1,7 +1,7 @@
 package com.yappeer.presentation.routes.model.mapper
 
-import com.yappeer.domain.content.model.Tag
-import com.yappeer.domain.content.model.TagsResult
+import com.yappeer.domain.subscriptions.model.Tag
+import com.yappeer.domain.subscriptions.model.TagsResult
 import com.yappeer.presentation.routes.model.ui.PaginationUiModel
 import com.yappeer.presentation.routes.model.ui.TagUiModel
 import com.yappeer.presentation.routes.model.ui.TagsUiModel
@@ -23,6 +23,7 @@ internal object TagsResponseMapper {
         return TagUiModel(
             id = id.toString(),
             name = name,
+            followers = followers,
         )
     }
 }

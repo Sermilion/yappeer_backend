@@ -1,4 +1,4 @@
-package com.yappeer.domain.content.model
+package com.yappeer.domain.subscriptions.model
 
 sealed interface TagsResult {
     data class Data(

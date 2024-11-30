@@ -711,6 +711,21 @@
     }
   }
 };
+            defs["FollowersResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "users" : {
+      "type" : "array",
+      "description" : "List of followers",
+      "items" : {
+        "$ref" : "#/components/schemas/User"
+      }
+    },
+    "pagination" : {
+      "$ref" : "#/components/schemas/Pagination"
+    }
+  }
+};
             defs["LoginParams"] = {
   "required" : [ "password", "username" ],
   "type" : "object",
@@ -731,6 +746,23 @@
     },
     "refreshToken" : {
       "type" : "string"
+    }
+  }
+};
+            defs["Pagination"] = {
+  "type" : "object",
+  "properties" : {
+    "currentPage" : {
+      "type" : "integer",
+      "description" : "Current page number"
+    },
+    "totalPages" : {
+      "type" : "integer",
+      "description" : "Total number of pages"
+    },
+    "pageSize" : {
+      "type" : "integer",
+      "description" : "Number of items per page"
     }
   }
 };
@@ -808,6 +840,96 @@
     }
   }
 };
+            defs["Tag"] = {
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "description" : "Tag ID",
+      "format" : "uuid"
+    },
+    "name" : {
+      "type" : "string",
+      "description" : "Tag name"
+    }
+  }
+};
+            defs["TagsResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "tags" : {
+      "type" : "array",
+      "description" : "List of followed tags",
+      "items" : {
+        "$ref" : "#/components/schemas/Tag"
+      }
+    },
+    "pagination" : {
+      "$ref" : "#/components/schemas/Pagination"
+    }
+  }
+};
+            defs["User"] = {
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "description" : "User ID",
+      "format" : "uuid"
+    },
+    "username" : {
+      "type" : "string",
+      "description" : "User's username"
+    },
+    "email" : {
+      "type" : "string",
+      "description" : "User's email address"
+    },
+    "avatar" : {
+      "type" : "string",
+      "description" : "URL of the user's avatar image",
+      "nullable" : true
+    }
+  }
+};
+            defs["UserSubscriptionsParams"] = {
+  "required" : [ "page", "pageSize", "userId" ],
+  "type" : "object",
+  "properties" : {
+    "userId" : {
+      "type" : "string",
+      "description" : "ID of the user whose followers to retrieve",
+      "format" : "uuid"
+    },
+    "page" : {
+      "type" : "integer",
+      "description" : "Page number for pagination"
+    },
+    "pageSize" : {
+      "type" : "integer",
+      "description" : "Number of items per page"
+    }
+  }
+};
+            defs["UserTagsParams"] = {
+  "required" : [ "page", "pageSize", "userId" ],
+  "type" : "object",
+  "properties" : {
+    "userId" : {
+      "type" : "string",
+      "description" : "ID of the user whose followed tags to retrieve",
+      "format" : "uuid"
+    },
+    "page" : {
+      "type" : "integer",
+      "description" : "Page number for pagination"
+    },
+    "pageSize" : {
+      "type" : "integer",
+      "description" : "Number of items per page"
+    }
+  }
+};
   </script>
 
   <div class="container-fluid">
@@ -825,6 +947,12 @@
             <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">API Summary</a></li>
 
                   <li class="nav-header" data-group="Default"><a href="#api-Default">API Methods - Default</a></li>
+                    <li data-group="Default" data-name="followersPost" class="">
+                      <a href="#api-Default-followersPost">followersPost</a>
+                    </li>
+                    <li data-group="Default" data-name="followingPost" class="">
+                      <a href="#api-Default-followingPost">followingPost</a>
+                    </li>
                     <li data-group="Default" data-name="loginPost" class="">
                       <a href="#api-Default-loginPost">loginPost</a>
                     </li>
@@ -839,6 +967,9 @@
                     </li>
                     <li data-group="Default" data-name="selfProfileGet" class="">
                       <a href="#api-Default-selfProfileGet">selfProfileGet</a>
+                    </li>
+                    <li data-group="Default" data-name="tagsPost" class="">
+                      <a href="#api-Default-tagsPost">tagsPost</a>
                     </li>
           </ul>
         </nav>
@@ -861,6 +992,680 @@
         <div id="sections">
                 <section id="api-Default">
                   <h1>Default</h1>
+                    <div id="api-Default-followersPost">
+                      <article id="api-Default-followersPost-0" data-group="User" data-name="followersPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>followersPost</h1>
+                          <p>Get followers list</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">List of users that a user is followed by</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/followers</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-followersPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-followersPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-followersPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-followersPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-followersPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-followersPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-followersPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-followersPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-followersPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-followersPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-followersPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-followersPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: application/json"\
+"//followers"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-followersPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        DefaultApi apiInstance = new DefaultApi();
+        UserSubscriptionsParams body = ; // UserSubscriptionsParams | 
+        try {
+            FollowersResponse result = apiInstance.followersPost(body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#followersPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-followersPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        UserSubscriptionsParams body = ; // UserSubscriptionsParams | 
+        try {
+            FollowersResponse result = apiInstance.followersPost(body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#followersPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-followersPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-followersPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+UserSubscriptionsParams *body = ; //  (optional)
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Get followers list
+[apiInstance followersPostWith:body
+              completionHandler: ^(FollowersResponse output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-followersPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var YapPeerApi = require('yap_peer_api');
+var defaultClient = YapPeerApi.ApiClient.instance;
+
+
+var api = new YapPeerApi.DefaultApi()
+var opts = { 
+  'body':  // {{UserSubscriptionsParams}} 
+};
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.followersPost(opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-followersPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-followersPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class followersPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new DefaultApi();
+            var body = new UserSubscriptionsParams(); // UserSubscriptionsParams |  (optional) 
+
+            try
+            {
+                // Get followers list
+                FollowersResponse result = apiInstance.followersPost(body);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.followersPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-followersPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$body = ; // UserSubscriptionsParams | 
+
+try {
+    $result = $api_instance->followersPost($body);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->followersPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-followersPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $body = WWW::SwaggerClient::Object::UserSubscriptionsParams->new(); # UserSubscriptionsParams | 
+
+eval { 
+    my $result = $api_instance->followersPost(body => $body);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->followersPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-followersPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+body =  # UserSubscriptionsParams |  (optional)
+
+try: 
+    # Get followers list
+    api_response = api_instance.followers_post(body=body)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DefaultApi->followersPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body </td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/UserSubscriptionsParams"
+      }
+    }
+  }
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_followersPost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_followersPost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Followers retrieved successfully </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-followersPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-followersPost-200-schema">
+                                  <div id='responses-followersPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Followers retrieved successfully",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/FollowersResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-followersPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-followersPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-followersPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 400 - Bad request - Invalid request body </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 500 - Internal server error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-followingPost">
+                      <article id="api-Default-followingPost-0" data-group="User" data-name="followingPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>followingPost</h1>
+                          <p>Get following list</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">List of users that a user is following</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/following</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-followingPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-followingPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-followingPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-followingPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-followingPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-followingPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-followingPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-followingPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-followingPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-followingPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-followingPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-followingPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: application/json"\
+"//following"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-followingPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        DefaultApi apiInstance = new DefaultApi();
+        UserSubscriptionsParams body = ; // UserSubscriptionsParams | 
+        try {
+            FollowersResponse result = apiInstance.followingPost(body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#followingPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-followingPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        UserSubscriptionsParams body = ; // UserSubscriptionsParams | 
+        try {
+            FollowersResponse result = apiInstance.followingPost(body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#followingPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-followingPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-followingPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+UserSubscriptionsParams *body = ; //  (optional)
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Get following list
+[apiInstance followingPostWith:body
+              completionHandler: ^(FollowersResponse output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-followingPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var YapPeerApi = require('yap_peer_api');
+var defaultClient = YapPeerApi.ApiClient.instance;
+
+
+var api = new YapPeerApi.DefaultApi()
+var opts = { 
+  'body':  // {{UserSubscriptionsParams}} 
+};
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.followingPost(opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-followingPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-followingPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class followingPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new DefaultApi();
+            var body = new UserSubscriptionsParams(); // UserSubscriptionsParams |  (optional) 
+
+            try
+            {
+                // Get following list
+                FollowersResponse result = apiInstance.followingPost(body);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.followingPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-followingPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$body = ; // UserSubscriptionsParams | 
+
+try {
+    $result = $api_instance->followingPost($body);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->followingPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-followingPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $body = WWW::SwaggerClient::Object::UserSubscriptionsParams->new(); # UserSubscriptionsParams | 
+
+eval { 
+    my $result = $api_instance->followingPost(body => $body);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->followingPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-followingPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+body =  # UserSubscriptionsParams |  (optional)
+
+try: 
+    # Get following list
+    api_response = api_instance.following_post(body=body)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DefaultApi->followingPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body </td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/UserSubscriptionsParams"
+      }
+    }
+  }
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_followingPost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_followingPost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Following users list retrieved successfully </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-followingPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-followingPost-200-schema">
+                                  <div id='responses-followingPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Following users list retrieved successfully",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/FollowersResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-followingPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-followingPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-followingPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 400 - Bad request - Invalid request body </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 500 - Internal server error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-Default-loginPost">
                       <article id="api-Default-loginPost-0" data-group="User" data-name="loginPost" data-version="0">
                         <div class="pull-left">
@@ -1610,7 +2415,7 @@ except ApiException as e:
                         <p class="marked">Generates a new JWT token using a refresh token.</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/refresh-token</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/refresh_token</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -1633,7 +2438,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
  -H "Authorization: Bearer [[accessToken]]"\
 -H "Accept: application/json"\
-"//refresh-token"</code></pre>
+"//refresh_token"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Default-refreshTokenGet-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -2563,6 +3368,343 @@ except ApiException as e:
                             </div>
 
                             <h3> Status: 400 - Invalid username for given token </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-tagsPost">
+                      <article id="api-Default-tagsPost-0" data-group="User" data-name="tagsPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>tagsPost</h1>
+                          <p>Get followed tags list</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">List of tags that a user is following</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/tags</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-tagsPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-tagsPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-tagsPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-tagsPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-tagsPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-tagsPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-tagsPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-tagsPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-tagsPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-tagsPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-tagsPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-tagsPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: application/json"\
+"//tags"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-tagsPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        DefaultApi apiInstance = new DefaultApi();
+        UserTagsParams body = ; // UserTagsParams | 
+        try {
+            TagsResponse result = apiInstance.tagsPost(body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#tagsPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-tagsPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        UserTagsParams body = ; // UserTagsParams | 
+        try {
+            TagsResponse result = apiInstance.tagsPost(body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#tagsPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-tagsPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-tagsPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+UserTagsParams *body = ; //  (optional)
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Get followed tags list
+[apiInstance tagsPostWith:body
+              completionHandler: ^(TagsResponse output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-tagsPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var YapPeerApi = require('yap_peer_api');
+var defaultClient = YapPeerApi.ApiClient.instance;
+
+
+var api = new YapPeerApi.DefaultApi()
+var opts = { 
+  'body':  // {{UserTagsParams}} 
+};
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.tagsPost(opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-tagsPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-tagsPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class tagsPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new DefaultApi();
+            var body = new UserTagsParams(); // UserTagsParams |  (optional) 
+
+            try
+            {
+                // Get followed tags list
+                TagsResponse result = apiInstance.tagsPost(body);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.tagsPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-tagsPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$body = ; // UserTagsParams | 
+
+try {
+    $result = $api_instance->tagsPost($body);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->tagsPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-tagsPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $body = WWW::SwaggerClient::Object::UserTagsParams->new(); # UserTagsParams | 
+
+eval { 
+    my $result = $api_instance->tagsPost(body => $body);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->tagsPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-tagsPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+body =  # UserTagsParams |  (optional)
+
+try: 
+    # Get followed tags list
+    api_response = api_instance.tags_post(body=body)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DefaultApi->tagsPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body </td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/UserTagsParams"
+      }
+    }
+  }
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_tagsPost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_tagsPost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Followed tags retrieved successfully </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-tagsPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-tagsPost-200-schema">
+                                  <div id='responses-tagsPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Followed tags retrieved successfully",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/TagsResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-tagsPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-tagsPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-tagsPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 400 - Bad request - Invalid request body </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 500 - Internal server error </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>

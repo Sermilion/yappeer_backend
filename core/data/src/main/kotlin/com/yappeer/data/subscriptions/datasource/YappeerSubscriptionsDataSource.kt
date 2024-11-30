@@ -1,16 +1,16 @@
-package com.yappeer.data.content.datasource
+package com.yappeer.data.subscriptions.datasource
 
-import com.yappeer.data.content.datasource.db.dao.TagDAO
-import com.yappeer.data.content.datasource.db.dao.TagTable
-import com.yappeer.data.content.datasource.db.dao.UserTagSubsTable
-import com.yappeer.data.content.datasource.db.dao.UserUserSubsTable
 import com.yappeer.data.onboarding.datasource.db.dao.UserDAO
 import com.yappeer.data.onboarding.datasource.db.dao.UserTable
 import com.yappeer.data.onboarding.mapper.TagDaoMapper.toDomainModel
 import com.yappeer.data.onboarding.mapper.UserDaoMapper.toDomainModel
-import com.yappeer.domain.content.datasource.SubscriptionsDataSource
-import com.yappeer.domain.content.model.FollowersResult
-import com.yappeer.domain.content.model.TagsResult
+import com.yappeer.data.subscriptions.datasource.db.dao.TagDAO
+import com.yappeer.data.subscriptions.datasource.db.dao.TagTable
+import com.yappeer.data.subscriptions.datasource.db.dao.UserTagSubsTable
+import com.yappeer.data.subscriptions.datasource.db.dao.UserUserSubsTable
+import com.yappeer.domain.subscriptions.datasource.SubscriptionsDataSource
+import com.yappeer.domain.subscriptions.model.FollowersResult
+import com.yappeer.domain.subscriptions.model.TagsResult
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.andWhere
