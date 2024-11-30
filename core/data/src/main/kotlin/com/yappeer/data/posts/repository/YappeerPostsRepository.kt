@@ -1,4 +1,4 @@
-package com.yappeer.data.communities.repository
+package com.yappeer.data.posts.repository
 
 import com.yappeer.domain.posts.datasource.PostDataSource
 import com.yappeer.domain.posts.model.PostsResult
@@ -10,5 +10,19 @@ class YappeerPostsRepository(
 ) : PostsRepository {
     override fun userPosts(userId: UUID, page: Int, pageSize: Int): PostsResult? {
         return dataSource.userPosts(userId, page, pageSize)
+    }
+
+    override fun createPost(
+        title: String,
+        content: String,
+        tags: List<String>,
+        createdBy: UUID,
+    ): Boolean {
+        return dataSource.createPost(
+            title = title,
+            content = content,
+            tags = tags,
+            createdBy = createdBy,
+        )
     }
 }

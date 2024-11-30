@@ -1,4 +1,4 @@
-package com.yappeer.presentation.routes.feature.profile
+package com.yappeer.presentation.routes.feature.subscriptions
 
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.subscriptions.model.FollowersResult

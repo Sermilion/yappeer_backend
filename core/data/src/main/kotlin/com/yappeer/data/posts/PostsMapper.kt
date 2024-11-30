@@ -1,13 +1,13 @@
-package com.yappeer.data.communities
+package com.yappeer.data.posts
 
-import com.yappeer.data.communities.datasource.db.dao.CommunitiesDAO
-import com.yappeer.data.communities.datasource.db.dao.PostDAO
+import com.yappeer.data.communities.db.dao.CommunitiesDAO
+import com.yappeer.data.posts.datasource.db.dao.PostDAO
 import com.yappeer.domain.communities.model.Community
 import com.yappeer.domain.posts.model.Post
 import com.yappeer.domain.subscriptions.model.Tag
 import kotlinx.datetime.toKotlinInstant
 
-object CommunitiesMapper {
+object PostsMapper {
 
     fun PostDAO.toDomainModel(
         communities: List<Community>,

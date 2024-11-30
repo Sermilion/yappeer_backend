@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserPostsUiModel(
-    val tags: List<PostUiModel>,
+    val posts: List<PostUiModel>,
     val pagination: PaginationUiModel,
 )

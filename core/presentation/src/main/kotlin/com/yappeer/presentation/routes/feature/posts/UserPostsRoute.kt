@@ -1,4 +1,4 @@
-package com.yappeer.presentation.routes.feature.communities
+package com.yappeer.presentation.routes.feature.posts
 
 import com.yappeer.domain.posts.repository.PostsRepository
 import com.yappeer.presentation.routes.model.mapper.PostMapper.toUiModel

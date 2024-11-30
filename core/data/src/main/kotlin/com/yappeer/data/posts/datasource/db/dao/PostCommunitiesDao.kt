@@ -1,5 +1,6 @@
-package com.yappeer.data.communities.datasource.db.dao
+package com.yappeer.data.posts.datasource.db.dao
 
+import com.yappeer.data.communities.db.dao.CommunitiesTable
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID

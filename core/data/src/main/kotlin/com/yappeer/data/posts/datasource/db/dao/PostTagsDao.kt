@@ -1,4 +1,4 @@
-package com.yappeer.data.communities.datasource.db.dao
+package com.yappeer.data.posts.datasource.db.dao
 
 import com.yappeer.data.subscriptions.datasource.db.dao.TagTable
 import org.jetbrains.exposed.dao.UUIDEntity

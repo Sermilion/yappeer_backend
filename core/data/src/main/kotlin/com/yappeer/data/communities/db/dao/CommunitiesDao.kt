@@ -1,4 +1,4 @@
-package com.yappeer.data.communities.datasource.db.dao
+package com.yappeer.data.communities.db.dao
 
 import com.yappeer.data.onboarding.datasource.db.dao.UserTable
 import org.jetbrains.exposed.dao.UUIDEntity
