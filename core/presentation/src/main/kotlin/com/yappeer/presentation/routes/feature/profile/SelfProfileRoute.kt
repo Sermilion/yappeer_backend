@@ -2,7 +2,7 @@ package com.yappeer.presentation.routes.feature.profile
 
 import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
-import com.yappeer.domain.onboarding.security.UserAuthenticationService.Companion.CLAIM_USER_ID
+import com.yappeer.presentation.common.getCurrentUserId
 import com.yappeer.presentation.routes.model.mapper.UserResponseMapper.toSelfUserUiModel
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.jwt.JWTPrincipal
@@ -12,7 +12,6 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingCall
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
-import java.util.UUID
 
 internal const val SELF_PROFILE_ROUTE = "/self_profile"
 
@@ -22,9 +21,7 @@ suspend fun Route.selfProfileRoute(call: RoutingCall) {
     val logger = LoggerFactory.getLogger(SELF_PROFILE_ROUTE)
 
     val principal = call.principal<JWTPrincipal>()
-    val userId = principal?.payload?.getClaim(CLAIM_USER_ID)?.asString()?.let {
-        UUID.fromString(it)
-    }
+    val userId = principal?.getCurrentUserId()
 
     try {
         if (userId != null) {

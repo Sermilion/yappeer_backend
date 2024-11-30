@@ -11,4 +11,18 @@ class YappeerPostsRepository(
     override fun userPosts(userId: UUID, page: Int, pageSize: Int): PostsResult? {
         return dataSource.userPosts(userId, page, pageSize)
     }
+
+    override fun createPost(
+        title: String,
+        content: String,
+        tags: List<String>,
+        createdBy: UUID,
+    ): Boolean {
+        return dataSource.createPost(
+            title = title,
+            content = content,
+            tags = tags,
+            createdBy = createdBy,
+        )
+    }
 }

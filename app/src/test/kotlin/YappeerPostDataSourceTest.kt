@@ -9,8 +9,6 @@ import com.yappeer.data.posts.datasource.db.dao.PostDAO
 import com.yappeer.data.posts.datasource.db.dao.PostTable
 import com.yappeer.data.posts.datasource.db.dao.PostTagDAO
 import com.yappeer.data.posts.datasource.db.dao.PostTagTable
-import com.yappeer.data.posts.datasource.db.dao.UserPostsDAO
-import com.yappeer.data.posts.datasource.db.dao.UserPostsTable
 import com.yappeer.data.subscriptions.datasource.db.dao.TagDAO
 import com.yappeer.data.subscriptions.datasource.db.dao.TagTable
 import com.yappeer.data.subscriptions.datasource.db.dao.UserTagSubsTable
@@ -20,18 +18,19 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
 
 class YappeerPostDataSourceTest {
     private lateinit var database: Database
-    private lateinit var yappeerCommunitiesDataSource: YappeerPostDataSource
+    private lateinit var dataSource: YappeerPostDataSource
 
     @BeforeEach
     fun setUp() {
@@ -45,30 +44,28 @@ class YappeerPostDataSourceTest {
                 UserTagSubsTable,
                 PostTagTable,
                 CommunityPostsTable,
-                UserPostsTable,
             )
         }
-        yappeerCommunitiesDataSource = YappeerPostDataSource()
+        dataSource = YappeerPostDataSource()
     }
 
     @AfterEach
     fun tearDown() {
         transaction(database) {
             SchemaUtils.drop(
-                UserPostsTable,
                 CommunityPostsTable,
-                PostTagTable,
-                UserTagSubsTable,
-                TagTable,
                 CommunitiesTable,
                 PostTable,
+                PostTagTable,
+                TagTable,
                 UserTable,
+                UserTagSubsTable,
             )
         }
     }
 
     @Test
-    fun `selfCommunityPosts returns correct posts with communities and tags`() {
+    fun `user posts returned with communities and tags`() {
         runBlocking {
             // Given
             val user = createUser("testuser", "test@test.com", "password")
@@ -86,13 +83,11 @@ class YappeerPostDataSourceTest {
                 communities = listOf(community1, community2),
                 tags = listOf(tag1, tag2),
             )
-            createUserPost(user.id.value, post1.id.value)
             val post2 = createPost("title2", "content2", user, listOf(community1), listOf(tag1))
-            createUserPost(user.id.value, post2.id.value)
 
             // When
             val result =
-                yappeerCommunitiesDataSource.userPosts(userId = user.id.value, pageSize = 10, page = 1)
+                dataSource.userPosts(userId = user.id.value, pageSize = 10, page = 1)
 
             // Then
             result.shouldBeInstanceOf<PostsResult>()
@@ -110,6 +105,62 @@ class YappeerPostDataSourceTest {
             resultPost2?.title shouldBe "title2"
             resultPost2?.communities?.size shouldBe 1
             resultPost2?.tags?.size shouldBe 1
+        }
+    }
+
+    @Test
+    fun `createPost creates a new post and associates tags`() {
+        val title = "Test Post Title"
+        val content = "Test Post Content"
+        val tags = listOf("tag1", "tag2", "tag3")
+
+        val user = createUser("testuser", "test@test.com", "password")
+
+        val result = dataSource.createPost(title, content, tags, user.id.value)
+
+        assertTrue(result)
+
+        transaction(database) {
+            val createdPost = PostDAO.all().firstOrNull()
+            assertEquals(title, createdPost?.title)
+            assertEquals(content, createdPost?.content)
+            assertEquals(user.id.value, createdPost?.createdBy?.value)
+
+            val associatedTags = PostTagTable.innerJoin(TagTable)
+                .selectAll().where { PostTagTable.postId eq createdPost?.id?.value }
+                .map { TagDAO[it[PostTagTable.tagId]].name }
+
+            assertEquals(tags.size, associatedTags.size)
+            tags.forEach { tag -> assertTrue(associatedTags.contains(tag)) }
+        }
+    }
+
+    @Test
+    fun `createPost handles existing tags correctly`() {
+        val title = "Test Post with Existing Tag"
+        val content = "Content for the post"
+        val existingTagName = "existingTag"
+
+        val user = createUser("testuser", "test@test.com", "password")
+
+        transaction {
+            TagDAO.new { name = existingTagName }
+        }
+
+        val tags = listOf(existingTagName, "newTag")
+        val result = dataSource.createPost(title, content, tags, user.id.value)
+        assertTrue(result)
+
+        transaction {
+            val numTags = TagDAO.all().count()
+            assertEquals(2, numTags)
+
+            val createdPost = PostDAO.all().firstOrNull()
+            val associatedTags = PostTagTable.innerJoin(TagTable)
+                .selectAll().where { PostTagTable.postId eq createdPost?.id?.value }
+                .map { TagDAO[it[PostTagTable.tagId]].name }
+            assertEquals(tags.size, associatedTags.size) // Check association
+            tags.forEach { tag -> assertTrue(associatedTags.contains(tag)) }
         }
     }
 
@@ -157,26 +208,10 @@ class YappeerPostDataSourceTest {
         }
     }
 
-    private fun createUserPost(userId: UUID, postId: UUID) {
-        transaction {
-            UserPostsDAO.new {
-                this.userId = EntityID(userId, UserTable)
-                this.postId = EntityID(postId, PostTable)
-            }
-        }
-    }
-
     private fun createCommunityPost(community: CommunitiesDAO, post: PostDAO) = transaction(database) {
         CommunityPostsDAO.new {
             this.communityId = community.id
             this.postId = post.id
-        }
-    }
-
-    private fun createCommunityPost(community: CommunitiesDAO, creator: UserDAO) = transaction(database) {
-        UserPostsDAO.new {
-            this.userId = EntityID(creator.id.value, UserTable)
-            this.postId = EntityID(community.id.value, CommunitiesTable) // Using Community ID as Post ID
         }
     }
 

@@ -6,7 +6,9 @@ import com.yappeer.presentation.routes.feature.onboarding.REGISTRATION_ROUTE
 import com.yappeer.presentation.routes.feature.onboarding.loginRoute
 import com.yappeer.presentation.routes.feature.onboarding.refreshTokenRoute
 import com.yappeer.presentation.routes.feature.onboarding.registrationRoute
+import com.yappeer.presentation.routes.feature.posts.CREATE_POST_ROUTE
 import com.yappeer.presentation.routes.feature.posts.USER_POSTS_ROUTE
+import com.yappeer.presentation.routes.feature.posts.createPostRoute
 import com.yappeer.presentation.routes.feature.posts.userPostsRoute
 import com.yappeer.presentation.routes.feature.profile.SELF_PROFILE_ROUTE
 import com.yappeer.presentation.routes.feature.profile.USER_PROFILE_ROUTE
@@ -45,6 +47,7 @@ fun Application.configureRouting() {
             post(FOLLOWING_ROUTE) { followingRoute(call) }
             post(TAGS_ROUTE) { tagsRoute(call) }
             post(USER_POSTS_ROUTE) { userPostsRoute(call) }
+            post(CREATE_POST_ROUTE) { createPostRoute(call) }
         }
     }
 }

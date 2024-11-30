@@ -5,4 +5,10 @@ import java.util.UUID
 
 interface PostDataSource {
     fun userPosts(userId: UUID, page: Int, pageSize: Int): PostsResult?
+    fun createPost(
+        title: String,
+        content: String,
+        tags: List<String>,
+        createdBy: UUID,
+    ): Boolean
 }

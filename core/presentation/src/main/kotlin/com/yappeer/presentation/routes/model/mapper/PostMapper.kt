@@ -13,7 +13,7 @@ import com.yappeer.presentation.routes.model.ui.UserPostsUiModel
 object PostMapper {
     fun PostsResult.toUiModel(): UserPostsUiModel {
         return UserPostsUiModel(
-            tags = posts.map { it.toUiModel() },
+            posts = posts.map { it.toUiModel() },
             pagination = PaginationUiModel(
                 totalCount = totalCount,
                 pagesCount = pagesCount,
