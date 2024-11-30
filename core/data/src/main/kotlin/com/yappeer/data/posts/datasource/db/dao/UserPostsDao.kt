@@ -1,8 +1,6 @@
-package com.yappeer.data.communities.datasource.db.dao
+package com.yappeer.data.posts.datasource.db.dao
 
 import com.yappeer.data.onboarding.datasource.db.dao.UserTable
-import com.yappeer.data.subscriptions.datasource.db.dao.UserTagSubsTable.autoIncrement
-import com.yappeer.data.subscriptions.datasource.db.dao.UserTagSubsTable.entityId
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID

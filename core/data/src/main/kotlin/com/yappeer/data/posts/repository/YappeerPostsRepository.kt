@@ -1,4 +1,4 @@
-package com.yappeer.data.communities.repository
+package com.yappeer.data.posts.repository
 
 import com.yappeer.domain.posts.datasource.PostDataSource
 import com.yappeer.domain.posts.model.PostsResult

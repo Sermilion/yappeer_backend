@@ -1,12 +1,12 @@
 package com.yappeer.di
 
-import com.yappeer.data.communities.datasource.YappeerPostDataSource
-import com.yappeer.data.communities.repository.YappeerPostsRepository
 import com.yappeer.data.config.YappeerEnvironmentConfigProvider
 import com.yappeer.data.onboarding.datasource.YappeerUserDataSource
 import com.yappeer.data.onboarding.repository.YappeerOnboardingRepository
 import com.yappeer.data.onboarding.security.YappeerJwtTokenService
 import com.yappeer.data.onboarding.security.YappeerUserAuthenticationService
+import com.yappeer.data.posts.datasource.YappeerPostDataSource
+import com.yappeer.data.posts.repository.YappeerPostsRepository
 import com.yappeer.data.subscriptions.datasource.YappeerSubscriptionsDataSource
 import com.yappeer.data.subscriptions.repository.YappeerSubscriptionsRepository
 import com.yappeer.domain.config.EnvironmentConfigProvider
