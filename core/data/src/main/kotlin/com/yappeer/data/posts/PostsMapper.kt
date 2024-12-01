@@ -28,7 +28,7 @@ object PostsMapper {
         )
     }
 
-    fun CommunitiesDAO.toDomainModel(): Community {
+    fun CommunitiesDAO.toDomainModel(followersCount: Long): Community {
         return Community(
             id = this.id.value,
             name = this.name,
@@ -38,7 +38,8 @@ object PostsMapper {
             updatedAt = this.updatedAt?.toKotlinInstant(),
             isPrivate = this.isPrivate,
             rules = null,
-            communityImageUrl = null,
+            iconUrl = this.iconUrl,
+            followersCount = followersCount,
         )
     }
 }

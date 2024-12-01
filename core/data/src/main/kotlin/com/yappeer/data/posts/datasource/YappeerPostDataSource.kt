@@ -1,16 +1,17 @@
 package com.yappeer.data.posts.datasource
 
 import com.yappeer.data.communities.db.dao.CommunitiesDAO
+import com.yappeer.data.communities.db.dao.CommunitiesTable
 import com.yappeer.data.onboarding.datasource.db.dao.UserTable
 import com.yappeer.data.onboarding.mapper.TagDaoMapper.toDomainModel
 import com.yappeer.data.posts.PostsMapper.toDomainModel
-import com.yappeer.data.posts.datasource.db.dao.CommunityPostsDAO
 import com.yappeer.data.posts.datasource.db.dao.CommunityPostsTable
 import com.yappeer.data.posts.datasource.db.dao.PostDAO
 import com.yappeer.data.posts.datasource.db.dao.PostTable
 import com.yappeer.data.posts.datasource.db.dao.PostTagTable
 import com.yappeer.data.subscriptions.datasource.db.dao.TagDAO
 import com.yappeer.data.subscriptions.datasource.db.dao.TagTable
+import com.yappeer.data.subscriptions.datasource.db.dao.UserCommunitySubsTable
 import com.yappeer.data.subscriptions.datasource.db.dao.UserTagSubsTable
 import com.yappeer.domain.posts.datasource.PostDataSource
 import com.yappeer.domain.posts.model.PostsResult
@@ -19,6 +20,7 @@ import kotlinx.datetime.toJavaInstant
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.count
+import org.jetbrains.exposed.sql.innerJoin
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.leftJoin
 import org.jetbrains.exposed.sql.selectAll
@@ -42,9 +44,27 @@ class YappeerPostDataSource : PostDataSource {
                         val postId = resultRow[PostTable.id].value
                         val postDAO = PostDAO[postId]
 
-                        val communities = CommunityPostsDAO.find { CommunityPostsTable.postId eq postId }.map {
-                            CommunitiesDAO[it.communityId].toDomainModel()
-                        }
+                        val communities = CommunityPostsTable
+                            .innerJoin(CommunitiesTable, { communityId }, { id })
+                            .leftJoin(UserCommunitySubsTable, { CommunitiesTable.id }, { communityId })
+                            .select(
+                                CommunitiesTable.columns + UserCommunitySubsTable.userId.count(),
+                            ).where { CommunityPostsTable.postId eq postId }
+                            .groupBy(
+                                CommunitiesTable.id,
+                                CommunitiesTable.name,
+                                CommunitiesTable.description,
+                                CommunitiesTable.creatorId,
+                                CommunitiesTable.createdAt,
+                                CommunitiesTable.updatedAt,
+                                CommunitiesTable.isPrivate,
+                                CommunitiesTable.iconUrl,
+                            )
+                            .map { communityRow ->
+                                val communityId = communityRow[CommunitiesTable.id]
+                                val followerCount = communityRow[UserCommunitySubsTable.userId.count()]
+                                CommunitiesDAO[communityId].toDomainModel(followerCount)
+                            }
 
                         val tags = (PostTagTable innerJoin TagTable)
                             .leftJoin(UserTagSubsTable, { TagTable.id }, { tagId })

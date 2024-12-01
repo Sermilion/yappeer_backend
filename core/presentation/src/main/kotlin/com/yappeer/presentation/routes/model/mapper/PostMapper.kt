@@ -48,7 +48,7 @@ object PostMapper {
             updatedAt = updatedAt,
             isPrivate = isPrivate,
             rules = rules,
-            communityImageUrl = communityImageUrl,
+            communityImageUrl = iconUrl,
         )
     }
 

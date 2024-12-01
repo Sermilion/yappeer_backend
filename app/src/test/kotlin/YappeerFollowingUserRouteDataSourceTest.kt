@@ -1,12 +1,16 @@
+import com.yappeer.data.communities.db.dao.CommunitiesDAO
+import com.yappeer.data.communities.db.dao.CommunitiesTable
 import com.yappeer.data.onboarding.datasource.db.dao.UserDAO
 import com.yappeer.data.onboarding.datasource.db.dao.UserTable
 import com.yappeer.data.subscriptions.datasource.YappeerSubscriptionsDataSource
 import com.yappeer.data.subscriptions.datasource.db.dao.TagDAO
 import com.yappeer.data.subscriptions.datasource.db.dao.TagTable
+import com.yappeer.data.subscriptions.datasource.db.dao.UserCommunitySubsTable
 import com.yappeer.data.subscriptions.datasource.db.dao.UserTagSubsDAO
 import com.yappeer.data.subscriptions.datasource.db.dao.UserTagSubsTable
 import com.yappeer.data.subscriptions.datasource.db.dao.UserUserSubsDAO
 import com.yappeer.data.subscriptions.datasource.db.dao.UserUserSubsTable
+import com.yappeer.domain.subscriptions.model.CommunitiesResult
 import com.yappeer.domain.subscriptions.model.FollowersResult
 import com.yappeer.domain.subscriptions.model.TagsResult
 import io.kotest.matchers.collections.shouldHaveSize
@@ -18,9 +22,12 @@ import kotlinx.datetime.toJavaInstant
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -28,7 +35,7 @@ import java.util.UUID
 class YappeerFollowingUserRouteDataSourceTest {
 
     private lateinit var database: Database
-    private lateinit var yappeerSubscriptionsDataSource: YappeerSubscriptionsDataSource
+    private lateinit var dataSource: YappeerSubscriptionsDataSource
 
     @BeforeEach
     fun setUp() {
@@ -38,24 +45,28 @@ class YappeerFollowingUserRouteDataSourceTest {
         // Create tables using Exposed's SchemaUtils
         transaction(database) {
             SchemaUtils.create(
-                UserTable,
+                CommunitiesTable,
                 TagTable,
-                UserUserSubsTable,
+                UserCommunitySubsTable,
+                UserTable,
                 UserTagSubsTable,
+                UserUserSubsTable,
             )
         }
 
-        yappeerSubscriptionsDataSource = YappeerSubscriptionsDataSource()
+        dataSource = YappeerSubscriptionsDataSource()
     }
 
     @AfterEach
     fun tearDown() {
         transaction(database) {
             SchemaUtils.drop(
-                UserUserSubsTable,
-                UserTagSubsTable,
+                CommunitiesTable,
                 TagTable,
                 UserTable,
+                UserCommunitySubsTable,
+                UserTagSubsTable,
+                UserUserSubsTable,
             )
         }
     }
@@ -74,7 +85,7 @@ class YappeerFollowingUserRouteDataSourceTest {
             createUserUserSubscription(subscriber.id.value, list[6].id.value)
 
             // when
-            val result = yappeerSubscriptionsDataSource.findFollowing(
+            val result = dataSource.findFollowing(
                 userId = subscriber.id.value,
                 pageSize = 2,
                 page = 2,
@@ -106,7 +117,7 @@ class YappeerFollowingUserRouteDataSourceTest {
             createUserUserSubscription(userId = list[6].id.value, subId = subscribee.id.value)
 
             // when
-            val result = yappeerSubscriptionsDataSource.findFollowers(
+            val result = dataSource.findFollowers(
                 userId = subscribee.id.value,
                 pageSize = 2,
                 page = 2,
@@ -135,7 +146,7 @@ class YappeerFollowingUserRouteDataSourceTest {
         createUserTagSubscription(testUser2.id.value, testTag1.id.value)
 
         // When
-        val result = yappeerSubscriptionsDataSource.findFollowedTags(
+        val result = dataSource.findFollowedTags(
             userId = testUser1.id.value,
             pageSize = 10,
             page = 1,
@@ -147,15 +158,35 @@ class YappeerFollowingUserRouteDataSourceTest {
         result.pagesCount shouldBe 1
         result.currentPage shouldBe 1
 
-        // Assert details of the first followed tag (testTag1)
         val followedTag1 = result.tags.find { it.id == testTag1.id.value }
         assertEquals(testTag1.name, followedTag1?.name)
-        assertEquals(2, followedTag1?.followers) // Two users follow this tag
+        assertEquals(2, followedTag1?.followers)
 
-        // Assert details of the second followed tag (testTag2)
         val followedTag2 = result.tags.find { it.id == testTag2.id.value }
         assertEquals(testTag2.name, followedTag2?.name)
-        assertEquals(1, followedTag2?.followers) // Only one user follows this tag
+        assertEquals(1, followedTag2?.followers)
+    }
+
+    @Test
+    fun `findFollowedCommunities returns correct communities for user`() {
+        val userId = createUser("testUser1", "test1@test.com", "passwordHash1").id.value
+        val community1 = createCommunity(name = "Community 1", createdBy = userId)
+        val community2 = createCommunity(name = "Community 2", createdBy = userId)
+        createCommunity(name = "Community 3", createdBy = userId)
+
+        createUserCommunitySub(userId, community1.id.value)
+        createUserCommunitySub(userId, community2.id.value)
+
+        val result = dataSource.findFollowedCommunities(userId, page = 1, pageSize = 10)
+
+        assertNotNull(result)
+        result as CommunitiesResult
+        assertEquals(2, result.totalTagCount)
+        assertEquals(1, result.pagesCount)
+        assertEquals(1, result.currentPage)
+
+        assertEquals(2, result.communities.size)
+        assertTrue(result.communities.map { it.name }.containsAll(listOf("Community 1", "Community 2")))
     }
 
     private fun createTag(tagName: String): TagDAO = transaction(database) {
@@ -208,5 +239,22 @@ class YappeerFollowingUserRouteDataSourceTest {
             testUser6,
             testUser7,
         )
+    }
+
+    private fun createCommunity(name: String, createdBy: UUID): CommunitiesDAO = transaction {
+        CommunitiesDAO.new {
+            this.name = name
+            this.description = "Description for $name"
+            this.creatorId = EntityID(createdBy, UserTable)
+            this.createdAt = Clock.System.now().toJavaInstant()
+            this.isPrivate = false
+        }
+    }
+
+    private fun createUserCommunitySub(userId: UUID, communityId: UUID) = transaction {
+        UserCommunitySubsTable.insert {
+            it[this.userId] = userId
+            it[this.communityId] = communityId
+        }
     }
 }

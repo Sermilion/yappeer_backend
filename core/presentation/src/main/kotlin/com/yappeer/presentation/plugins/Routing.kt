@@ -14,9 +14,11 @@ import com.yappeer.presentation.routes.feature.profile.SELF_PROFILE_ROUTE
 import com.yappeer.presentation.routes.feature.profile.USER_PROFILE_ROUTE
 import com.yappeer.presentation.routes.feature.profile.selfProfileRoute
 import com.yappeer.presentation.routes.feature.profile.userProfileRoute
+import com.yappeer.presentation.routes.feature.subscriptions.COMMUNITIES_ROUTE
 import com.yappeer.presentation.routes.feature.subscriptions.FOLLOWERS_ROUTE
 import com.yappeer.presentation.routes.feature.subscriptions.FOLLOWING_ROUTE
 import com.yappeer.presentation.routes.feature.subscriptions.TAGS_ROUTE
+import com.yappeer.presentation.routes.feature.subscriptions.communitiesRoute
 import com.yappeer.presentation.routes.feature.subscriptions.followersRoute
 import com.yappeer.presentation.routes.feature.subscriptions.followingRoute
 import com.yappeer.presentation.routes.feature.subscriptions.tagsRoute
@@ -40,12 +42,13 @@ fun Application.configureRouting() {
         post(REGISTRATION_ROUTE) { registrationRoute(call) }
 
         authenticate(AUTHENTICATION_IDENTIFIER) {
+            get(REFRESH_TOKEN_ROUTE) { refreshTokenRoute(call) }
             get(USER_PROFILE_ROUTE) { userProfileRoute(call) }
             get(SELF_PROFILE_ROUTE) { selfProfileRoute(call) }
-            get(REFRESH_TOKEN_ROUTE) { refreshTokenRoute(call) }
             post(FOLLOWERS_ROUTE) { followersRoute(call) }
             post(FOLLOWING_ROUTE) { followingRoute(call) }
             post(TAGS_ROUTE) { tagsRoute(call) }
+            post(COMMUNITIES_ROUTE) { communitiesRoute(call) }
             post(USER_POSTS_ROUTE) { userPostsRoute(call) }
             post(CREATE_POST_ROUTE) { createPostRoute(call) }
         }
