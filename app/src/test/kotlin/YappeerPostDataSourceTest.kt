@@ -11,6 +11,7 @@ import com.yappeer.data.posts.datasource.db.dao.PostTagDAO
 import com.yappeer.data.posts.datasource.db.dao.PostTagTable
 import com.yappeer.data.subscriptions.datasource.db.dao.TagDAO
 import com.yappeer.data.subscriptions.datasource.db.dao.TagTable
+import com.yappeer.data.subscriptions.datasource.db.dao.UserCommunitySubsTable
 import com.yappeer.data.subscriptions.datasource.db.dao.UserTagSubsTable
 import com.yappeer.domain.posts.model.PostsResult
 import io.kotest.matchers.shouldBe
@@ -44,6 +45,7 @@ class YappeerPostDataSourceTest {
                 UserTagSubsTable,
                 PostTagTable,
                 CommunityPostsTable,
+                UserCommunitySubsTable,
             )
         }
         dataSource = YappeerPostDataSource()
@@ -60,6 +62,7 @@ class YappeerPostDataSourceTest {
                 TagTable,
                 UserTable,
                 UserTagSubsTable,
+                UserCommunitySubsTable,
             )
         }
     }

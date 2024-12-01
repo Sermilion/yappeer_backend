@@ -17,6 +17,7 @@ class CommunitiesDAO(id: EntityID<UUID>) : UUIDEntity(id) {
     var createdAt by CommunitiesTable.createdAt
     var updatedAt by CommunitiesTable.updatedAt
     var isPrivate by CommunitiesTable.isPrivate
+    var iconUrl by CommunitiesTable.iconUrl
 }
 
 object CommunitiesTable : UUIDTable("community") {
@@ -26,4 +27,5 @@ object CommunitiesTable : UUIDTable("community") {
     val createdAt = CommunitiesTable.timestamp("created_at")
     val updatedAt = CommunitiesTable.timestamp("updated_at").nullable()
     val isPrivate = CommunitiesTable.bool("is_private")
+    val iconUrl = CommunitiesTable.text("icon_url").nullable()
 }

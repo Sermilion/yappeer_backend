@@ -12,5 +12,6 @@ data class Community(
     val updatedAt: Instant?,
     val isPrivate: Boolean,
     val rules: List<String>?,
-    val communityImageUrl: String?,
+    val iconUrl: String?,
+    val followersCount: Long,
 )
