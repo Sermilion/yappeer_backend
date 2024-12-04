@@ -19,6 +19,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.exceptions.ExposedSQLException
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.innerJoin
 import org.jetbrains.exposed.sql.insert
@@ -44,39 +45,8 @@ class YappeerPostDataSource : PostDataSource {
                         val postId = resultRow[PostTable.id].value
                         val postDAO = PostDAO[postId]
 
-                        val communities = CommunityPostsTable
-                            .innerJoin(CommunitiesTable, { communityId }, { id })
-                            .leftJoin(UserCommunitySubsTable, { CommunitiesTable.id }, { communityId })
-                            .select(
-                                CommunitiesTable.columns + UserCommunitySubsTable.userId.count(),
-                            ).where { CommunityPostsTable.postId eq postId }
-                            .groupBy(
-                                CommunitiesTable.id,
-                                CommunitiesTable.name,
-                                CommunitiesTable.description,
-                                CommunitiesTable.creatorId,
-                                CommunitiesTable.createdAt,
-                                CommunitiesTable.updatedAt,
-                                CommunitiesTable.isPrivate,
-                                CommunitiesTable.iconUrl,
-                            )
-                            .map { communityRow ->
-                                val communityId = communityRow[CommunitiesTable.id]
-                                val followerCount = communityRow[UserCommunitySubsTable.userId.count()]
-                                CommunitiesDAO[communityId].toDomainModel(followerCount)
-                            }
-
-                        val tags = (PostTagTable innerJoin TagTable)
-                            .leftJoin(UserTagSubsTable, { TagTable.id }, { tagId })
-                            .select(TagTable.columns + UserTagSubsTable.userId.count())
-                            .where { PostTagTable.postId eq postId }
-                            .groupBy(TagTable.id)
-                            .map { tagRow ->
-                                val tagId = tagRow[TagTable.id].value
-                                val tagDAO = TagDAO[tagId]
-                                val followerCount = tagRow[UserTagSubsTable.userId.count()]
-                                tagDAO.toDomainModel(followerCount)
-                            }
+                        val communities = findCommunities(postId)
+                        val tags = findTags(postId)
                         postDAO.toDomainModel(communities = communities, tags = tags)
                     }
 
@@ -89,6 +59,39 @@ class YappeerPostDataSource : PostDataSource {
             }
         } catch (e: ExposedSQLException) {
             logger.error("Error fetching user posts", e)
+            null
+        }
+    }
+
+    override fun homePosts(page: Int, pageSize: Int): PostsResult? {
+        return try {
+            transaction {
+                val query = PostTable
+                    .selectAll()
+                    .orderBy(PostTable.likes, SortOrder.DESC)
+
+                val totalPosts = query.count()
+
+                val posts = query
+                    .limit(pageSize).offset(start = (page - 1).toLong() * pageSize)
+                    .map { resultRow ->
+                        val postId = resultRow[PostTable.id].value
+                        val postDAO = PostDAO[postId]
+
+                        val communities = findCommunities(postId)
+                        val tags = findTags(postId)
+
+                        postDAO.toDomainModel(communities = communities, tags = tags) // Map to domain model
+                    }
+                PostsResult(
+                    posts = posts,
+                    totalCount = totalPosts,
+                    pagesCount = (totalPosts + pageSize - 1) / pageSize,
+                    currentPage = page,
+                )
+            }
+        } catch (e: ExposedSQLException) {
+            logger.error("Error fetching home posts", e)
             null
         }
     }
@@ -127,4 +130,38 @@ class YappeerPostDataSource : PostDataSource {
             false
         }
     }
+
+    private fun findCommunities(postId: UUID) = CommunityPostsTable
+        .innerJoin(CommunitiesTable, { communityId }, { id })
+        .leftJoin(UserCommunitySubsTable, { CommunitiesTable.id }, { communityId })
+        .select(
+            CommunitiesTable.columns + UserCommunitySubsTable.userId.count(),
+        ).where { CommunityPostsTable.postId eq postId }
+        .groupBy(
+            CommunitiesTable.id,
+            CommunitiesTable.name,
+            CommunitiesTable.description,
+            CommunitiesTable.creatorId,
+            CommunitiesTable.createdAt,
+            CommunitiesTable.updatedAt,
+            CommunitiesTable.isPrivate,
+            CommunitiesTable.iconUrl,
+        )
+        .map { communityRow ->
+            val communityId = communityRow[CommunitiesTable.id]
+            val followerCount = communityRow[UserCommunitySubsTable.userId.count()]
+            CommunitiesDAO[communityId].toDomainModel(followerCount)
+        }
+
+    private fun findTags(postId: UUID) = (PostTagTable innerJoin TagTable)
+        .leftJoin(UserTagSubsTable, { TagTable.id }, { tagId })
+        .select(TagTable.columns + UserTagSubsTable.userId.count())
+        .where { PostTagTable.postId eq postId }
+        .groupBy(TagTable.id)
+        .map { tagRow ->
+            val tagId = tagRow[TagTable.id].value
+            val tagDAO = TagDAO[tagId]
+            val followerCount = tagRow[UserTagSubsTable.userId.count()]
+            tagDAO.toDomainModel(followerCount)
+        }
 }

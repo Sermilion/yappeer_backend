@@ -11,4 +11,5 @@ interface PostDataSource {
         tags: List<String>,
         createdBy: UUID,
     ): Boolean
+    fun homePosts(page: Int, pageSize: Int): PostsResult?
 }

@@ -18,6 +18,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import kotlin.time.Duration.Companion.hours
 
 class YappeerPostDataSourceTest {
     private lateinit var database: Database
@@ -167,6 +169,37 @@ class YappeerPostDataSourceTest {
         }
     }
 
+    @Test
+    fun `homePosts returns paginated posts sorted by likes`() {
+        runBlocking {
+            // Given
+            val user = createUser("testuser", "test@test.com", "password")
+            val now = Clock.System.now()
+
+            // Create posts with different like counts and creation times to test sorting and pagination
+            createPost("Post 1", "Content 1", user, likes = 5, createdAt = now.minus(duration = 2.hours))
+            createPost("Post 2", "Content 2", user, likes = 2, createdAt = now.minus(duration = 1.hours))
+            createPost("Post 3", "Content 3", user, likes = 10, createdAt = now)
+
+            // When - Page 1
+            var result = dataSource.homePosts(page = 1, pageSize = 2)
+
+            // Then - Page 1
+            result.shouldBeInstanceOf<PostsResult>()
+            result.posts.size shouldBe 2
+            result.posts[0].title shouldBe "Post 3"
+            result.posts[1].title shouldBe "Post 1"
+
+            // When - Page 2
+            result = dataSource.homePosts(page = 2, pageSize = 2)
+
+            // Then - Page 2
+            result.shouldBeInstanceOf<PostsResult>()
+            result.posts.size shouldBe 1
+            result.posts[0].title shouldBe "Post 2"
+        }
+    }
+
     private fun createUser(username: String, email: String, passwordHash: String): UserDAO =
         transaction(database) {
             UserDAO.new {
@@ -208,6 +241,24 @@ class YappeerPostDataSourceTest {
         }.also { post ->
             communities.forEach { community -> createCommunityPost(community, post) }
             tags.forEach { tag -> createPostTag(post, tag) }
+        }
+    }
+
+    private fun createPost(
+        title: String,
+        content: String,
+        creator: UserDAO,
+        likes: Int,
+        createdAt: Instant,
+    ): PostDAO = transaction(database) {
+        PostDAO.new {
+            this.title = title
+            this.content = content
+            this.createdBy = creator.id
+            this.createdAt = createdAt.toJavaInstant()
+            this.likes = likes
+            this.dislikes = 0
+            this.shares = 0
         }
     }
 

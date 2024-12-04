@@ -25,4 +25,8 @@ class YappeerPostsRepository(
             createdBy = createdBy,
         )
     }
+
+    override fun homePosts(page: Int, pageSize: Int): PostsResult? {
+        return dataSource.homePosts(page, pageSize)
+    }
 }
