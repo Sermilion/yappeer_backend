@@ -8,7 +8,8 @@ version = "unspecified"
 dependencies {
     implementation(project(":core:domain"))
 
-    implementation(libs.argon2)
+    implementation(libs.spring.security)
+    implementation(libs.spring.bouncycastle)
 
     implementation(libs.jetbrains.exposed.dao)
     implementation(libs.jetbrains.exposed.jdbc)

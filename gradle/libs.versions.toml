@@ -13,7 +13,8 @@ exposedVersion="0.55.0"
 spotless = "6.25.0"
 
 [libraries]
-argon2 = { group = "de.mkammerer", name = "argon2-jvm", version = "2.1" }
+spring-security = { group = "org.springframework.security", name = "spring-security-core", version = "6.4.2" }
+spring-bouncycastle = { group = "org.bouncycastle", name="bcprov-jdk18on", version = "1.79"}
 
 jetbrains-exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao", version.ref = "exposedVersion" }
 jetbrains-exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposedVersion" }

@@ -7,60 +7,57 @@ import com.yappeer.domain.onboarding.model.value.Password
 import com.yappeer.domain.onboarding.security.UserAuthenticationService
 import com.yappeer.domain.onboarding.security.UserAuthenticationService.Companion.CLAIM_TOKEN_ID
 import com.yappeer.domain.onboarding.security.UserAuthenticationService.Companion.CLAIM_USER_ID
-import de.mkammerer.argon2.Argon2Factory
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import java.util.Date
 import java.util.UUID
 
 class YappeerUserAuthenticationService(
-    private val configProvider: EnvironmentConfigProvider,
+  private val configProvider: EnvironmentConfigProvider,
 ) : UserAuthenticationService {
 
-    private val argon2 = Argon2Factory.create()
+  private var argon2 = Argon2PasswordEncoder(
+    SALT_LENGTH,
+    HASH_LENGTH,
+    PARALLELISM,
+    MEMORY_KB,
+    ITERATIONS,
+  )
 
-    override fun hashPassword(password: Password): Password {
-        return Password(
-            argon2.hash(
-                ITERATIONS,
-                MEMORY_KB,
-                PARALLELISM,
-                password.value.toCharArray(),
-            ),
-        )
-    }
+  override fun hashPassword(password: Password): Password {
+    return Password(argon2.encode(password.value))
+  }
 
-    override fun verifyPassword(password: Password, hashedPassword: Password): Boolean {
-        try {
-            return argon2.verify(hashedPassword.value, password.value)
-        } finally {
-            argon2.wipeArray(password.value.toCharArray())
-        }
-    }
+  override fun verifyPassword(password: Password, hashedPassword: Password): Boolean {
+    return argon2.matches(password.value, hashedPassword.value)
+  }
 
-    override fun generateAccessToken(userId: UUID): String {
-        val config = configProvider.provideJwtConfig()
+  override fun generateAccessToken(userId: UUID): String {
+    val config = configProvider.provideJwtConfig()
 
-        val token = JWT.create()
-            .withClaim(CLAIM_USER_ID, userId.toString())
-            .withExpiresAt(Date(System.currentTimeMillis() + TOKEN_DURATION))
-            .sign(Algorithm.HMAC256(config.secret))
-        return token
-    }
+    val token = JWT.create()
+      .withClaim(CLAIM_USER_ID, userId.toString())
+      .withExpiresAt(Date(System.currentTimeMillis() + TOKEN_DURATION))
+      .sign(Algorithm.HMAC256(config.secret))
+    return token
+  }
 
-    override fun generateRefreshToken(userId: UUID): String {
-        val config = configProvider.provideJwtConfig()
-        val tokenId = UUID.randomUUID().toString()
-        return JWT.create()
-            .withClaim(CLAIM_USER_ID, userId.toString())
-            .withClaim(CLAIM_TOKEN_ID, tokenId)
-            .withExpiresAt(Date(System.currentTimeMillis() + REFRESH_TOKEN_DURATION))
-            .sign(Algorithm.HMAC256(config.secret))
-    }
+  override fun generateRefreshToken(userId: UUID): String {
+    val config = configProvider.provideJwtConfig()
+    val tokenId = UUID.randomUUID().toString()
+    return JWT.create()
+      .withClaim(CLAIM_USER_ID, userId.toString())
+      .withClaim(CLAIM_TOKEN_ID, tokenId)
+      .withExpiresAt(Date(System.currentTimeMillis() + REFRESH_TOKEN_DURATION))
+      .sign(Algorithm.HMAC256(config.secret))
+  }
 
-    companion object {
-        private const val ITERATIONS = 10
-        private const val MEMORY_KB = 65536 // 64 MB
-        private const val PARALLELISM = 1
-        private const val TOKEN_DURATION = 60000 * 60 * 24 * 7L
-        private const val REFRESH_TOKEN_DURATION = 3600000L
-    }
+  private companion object {
+    const val ITERATIONS = 10
+    const val HASH_LENGTH = 32
+    const val SALT_LENGTH = 16
+    const val MEMORY_KB = 65536 // 64 MB
+    const val PARALLELISM = 1
+    const val TOKEN_DURATION = 60000 * 60 * 24 * 7L
+    const val REFRESH_TOKEN_DURATION = 3600000L
+  }
 }
