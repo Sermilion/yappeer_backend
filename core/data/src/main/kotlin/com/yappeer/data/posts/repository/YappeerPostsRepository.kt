@@ -1,6 +1,7 @@
 package com.yappeer.data.posts.repository
 
 import com.yappeer.domain.posts.datasource.PostDataSource
+import com.yappeer.domain.posts.model.LikeStatus
 import com.yappeer.domain.posts.model.PostsResult
 import com.yappeer.domain.posts.repository.PostsRepository
 import java.util.UUID
@@ -28,5 +29,9 @@ class YappeerPostsRepository(
 
     override fun homePosts(page: Int, pageSize: Int): PostsResult? {
         return dataSource.homePosts(page, pageSize)
+    }
+
+    override fun likePost(postId: UUID, userId: UUID, status: LikeStatus): Boolean {
+        return dataSource.updateLikeStats(postId = postId, userId = userId, status = status)
     }
 }

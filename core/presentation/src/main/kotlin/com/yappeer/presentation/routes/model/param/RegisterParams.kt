@@ -9,11 +9,9 @@ import kotlinx.serialization.Serializable
 class RegisterParams(
     val username: String,
     val password: String,
-    val repeatPassword: String,
     val email: String,
 ) {
     val usernameValue get() = Username(username)
     val passwordValue get() = Password(password)
-    val repeatPasswordValue get() = Password(repeatPassword)
     val emailValue get() = Email(email)
 }

@@ -1,5 +1,6 @@
 package com.yappeer.domain.posts.repository
 
+import com.yappeer.domain.posts.model.LikeStatus
 import com.yappeer.domain.posts.model.PostsResult
 import java.util.UUID
 
@@ -12,4 +13,5 @@ interface PostsRepository {
         createdBy: UUID,
     ): Boolean
     fun homePosts(page: Int, pageSize: Int): PostsResult?
+    fun likePost(postId: UUID, userId: UUID, status: LikeStatus): Boolean
 }

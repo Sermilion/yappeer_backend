@@ -7,10 +7,14 @@ import com.yappeer.presentation.routes.feature.onboarding.loginRoute
 import com.yappeer.presentation.routes.feature.onboarding.refreshTokenRoute
 import com.yappeer.presentation.routes.feature.onboarding.registrationRoute
 import com.yappeer.presentation.routes.feature.posts.CREATE_POST_ROUTE
+import com.yappeer.presentation.routes.feature.posts.DISLIKE_POST_ROUTE
 import com.yappeer.presentation.routes.feature.posts.HOME_POSTS_ROUTE
+import com.yappeer.presentation.routes.feature.posts.LIKE_POST_ROUTE
 import com.yappeer.presentation.routes.feature.posts.USER_POSTS_ROUTE
 import com.yappeer.presentation.routes.feature.posts.createPostRoute
+import com.yappeer.presentation.routes.feature.posts.dislikePostRoute
 import com.yappeer.presentation.routes.feature.posts.homePostsRoute
+import com.yappeer.presentation.routes.feature.posts.likePostRoute
 import com.yappeer.presentation.routes.feature.posts.userPostsRoute
 import com.yappeer.presentation.routes.feature.profile.SELF_PROFILE_ROUTE
 import com.yappeer.presentation.routes.feature.profile.USER_PROFILE_ROUTE
@@ -57,12 +61,11 @@ fun Application.configureRouting() {
 
             post(CREATE_POST_ROUTE) { createPostRoute(call) }
             post(HOME_POSTS_ROUTE) { homePostsRoute(call) }
-            // like post
-            // dislike post
+            post(LIKE_POST_ROUTE) { likePostRoute(call) }
+            post(DISLIKE_POST_ROUTE) { dislikePostRoute(call) }
             // read post
             // add comment
             // load comments
-            // home posts
             // follow user
             // unfollow user
             // follow tag

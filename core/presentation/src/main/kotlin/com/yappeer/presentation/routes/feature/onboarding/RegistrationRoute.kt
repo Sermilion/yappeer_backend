@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory
 
 internal const val REGISTRATION_ROUTE = "/register"
 private const val ERROR_TYPE_VALIDATION = "ValidationError"
-private const val ERROR_TYPE_PASSWORD_MATCH = "PasswordMatch"
 
 suspend fun Route.registrationRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()
@@ -28,19 +27,9 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
     val request = call.receive<RegisterParams>()
 
     try {
-        val password = request.passwordValue
-        val repeatPassword = request.repeatPasswordValue
-
-        if (password != repeatPassword) {
-            call.respond(
-                HttpStatusCode.BadRequest,
-                ErrorResponse(code = ERROR_TYPE_PASSWORD_MATCH, details = emptyList()),
-            )
-        }
-
         val result = onboardingRepository.register(
             username = request.usernameValue,
-            hashedPassword = userAuthenticationService.hashPassword(password),
+            hashedPassword = userAuthenticationService.hashPassword(request.passwordValue),
             email = request.emailValue,
         )
 

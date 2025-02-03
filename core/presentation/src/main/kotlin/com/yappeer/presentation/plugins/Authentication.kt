@@ -20,7 +20,7 @@ fun Application.configureAuthentication() {
     install(Authentication) {
         jwt(AUTHENTICATION_IDENTIFIER) {
             val properties = loadProperties("local.properties")
-            val secret = properties.getProperty("jwt.secret")
+            val secret = properties.getProperty("jwtsecret")
 
             verifier(JWT.require(Algorithm.HMAC256(secret)).build())
             validate { credential ->

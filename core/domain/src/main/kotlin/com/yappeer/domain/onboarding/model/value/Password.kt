@@ -13,6 +13,6 @@ value class Password(val value: String) {
     }
 
     companion object {
-        private const val PASSWORD_PATTERN = "((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#$%!]).{7,255})"
+        private const val PASSWORD_PATTERN = "((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#$%!.]).{7,255})"
     }
 }

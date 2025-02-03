@@ -5,8 +5,6 @@ import com.yappeer.domain.onboarding.repository.OnboardingRepository
 import com.yappeer.presentation.common.getCurrentUserId
 import com.yappeer.presentation.routes.model.mapper.UserResponseMapper.toSelfUserUiModel
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.principal
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingCall
@@ -19,9 +17,7 @@ suspend fun Route.selfProfileRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()
 
     val logger = LoggerFactory.getLogger(SELF_PROFILE_ROUTE)
-
-    val principal = call.principal<JWTPrincipal>()
-    val userId = principal?.getCurrentUserId()
+    val userId = call.getCurrentUserId()
 
     try {
         if (userId != null) {

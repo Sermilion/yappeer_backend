@@ -19,8 +19,7 @@ suspend fun Route.createPostRoute(call: RoutingCall) {
     val repository: PostsRepository by inject()
 
     val params = call.receive<CreatePostParams>()
-    val principal = call.principal<JWTPrincipal>()
-    val userId = principal?.getCurrentUserId()
+    val userId = call.getCurrentUserId()
 
     if (userId == null) {
         val message = "Invalid token"

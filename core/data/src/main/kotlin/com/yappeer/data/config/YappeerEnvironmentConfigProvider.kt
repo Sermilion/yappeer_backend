@@ -5,6 +5,6 @@ import com.yappeer.domain.config.model.JwtConfig
 
 class YappeerEnvironmentConfigProvider : EnvironmentConfigProvider {
     override fun provideJwtConfig(): JwtConfig {
-        return JwtConfig(secret = System.getenv("jwt.secret"))
+        return JwtConfig(secret = System.getenv("jwtsecret"))
     }
 }

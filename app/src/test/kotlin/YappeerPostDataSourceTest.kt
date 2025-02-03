@@ -6,6 +6,7 @@ import com.yappeer.data.posts.datasource.YappeerPostDataSource
 import com.yappeer.data.posts.datasource.db.dao.CommunityPostsDAO
 import com.yappeer.data.posts.datasource.db.dao.CommunityPostsTable
 import com.yappeer.data.posts.datasource.db.dao.PostDAO
+import com.yappeer.data.posts.datasource.db.dao.PostLikesDislikesTable
 import com.yappeer.data.posts.datasource.db.dao.PostTable
 import com.yappeer.data.posts.datasource.db.dao.PostTagDAO
 import com.yappeer.data.posts.datasource.db.dao.PostTagTable
@@ -13,6 +14,7 @@ import com.yappeer.data.subscriptions.datasource.db.dao.TagDAO
 import com.yappeer.data.subscriptions.datasource.db.dao.TagTable
 import com.yappeer.data.subscriptions.datasource.db.dao.UserCommunitySubsTable
 import com.yappeer.data.subscriptions.datasource.db.dao.UserTagSubsTable
+import com.yappeer.domain.posts.model.LikeStatus
 import com.yappeer.domain.posts.model.PostsResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -48,6 +50,7 @@ class YappeerPostDataSourceTest {
                 PostTagTable,
                 CommunityPostsTable,
                 UserCommunitySubsTable,
+                PostLikesDislikesTable,
             )
         }
         dataSource = YappeerPostDataSource()
@@ -65,6 +68,7 @@ class YappeerPostDataSourceTest {
                 UserTable,
                 UserTagSubsTable,
                 UserCommunitySubsTable,
+                PostLikesDislikesTable,
             )
         }
     }
@@ -198,6 +202,63 @@ class YappeerPostDataSourceTest {
             result.posts.size shouldBe 1
             result.posts[0].title shouldBe "Post 2"
         }
+    }
+
+    @Test
+    fun `updateLikeStats should increment likes`() {
+        val user = createUser("testuser", "test@test.com", "password")
+        val now = Clock.System.now()
+
+        createPost("Post 1", "Content 1", user, likes = 0, createdAt = now.minus(duration = 2.hours))
+
+        val postId = transaction { PostDAO.all().first().id.value }
+        val status = LikeStatus.Like
+        val result = dataSource.updateLikeStats(postId, user.id.value, status)
+
+        result shouldBe true
+
+        val updatedPost = transaction { PostDAO.findById(postId)!! }
+        updatedPost.likes shouldBe 1
+        updatedPost.dislikes shouldBe 0
+    }
+
+    @Test
+    fun `updateLikeStats should increment dislikes`() {
+        val user = createUser("testuser", "test@test.com", "password")
+        val now = Clock.System.now()
+
+        createPost("Post 1", "Content 1", user, likes = 0, createdAt = now.minus(duration = 2.hours))
+
+        val postId = transaction { PostDAO.all().first().id.value }
+        val result = dataSource.updateLikeStats(postId, user.id.value, LikeStatus.Dislike)
+
+        result shouldBe true
+
+        val updatedPost = transaction { PostDAO.findById(postId)!! }
+        updatedPost.likes shouldBe 0
+        updatedPost.dislikes shouldBe 1
+    }
+
+    @Test
+    fun `updateLikeStats with LikeStatus Neutral from Like should decrease the likes counter`(){
+        val user = createUser("testuser", "test@test.com", "password")
+        val now = Clock.System.now()
+
+        createPost("Post 1", "Content 1", user, likes = 0, createdAt = now.minus(duration = 2.hours))
+        val postId = transaction { PostDAO.all().first().id.value }
+
+        //Set status to Like
+        val result1 = dataSource.updateLikeStats(postId, user.id.value, LikeStatus.Like)
+        result1 shouldBe true
+        val updatedPost1 = transaction { PostDAO.findById(postId)!! }
+        updatedPost1.likes shouldBe 1
+
+        //Set Status to Neutral from like
+        val result2 = dataSource.updateLikeStats(postId, user.id.value, LikeStatus.Neutral)
+        result2 shouldBe true
+        val updatedPost = transaction { PostDAO.findById(postId)!! }
+        updatedPost.likes shouldBe 0
+        updatedPost.dislikes shouldBe 0
     }
 
     private fun createUser(username: String, email: String, passwordHash: String): UserDAO =

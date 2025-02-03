@@ -6,6 +6,6 @@ import org.h2.util.SortedProperties.loadProperties
 class YappeerJwtTokenService : JwtTokenService {
     override fun loadJwtSecret(): String {
         val properties = loadProperties("local.properties")
-        return properties.getProperty("jwt.secret")
+        return properties.getProperty("jwtsecret")
     }
 }
