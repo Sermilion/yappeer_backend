@@ -3,7 +3,6 @@ package com.yappeer.presentation.routes.feature.onboarding
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
-import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.security.JwtTokenService
 import com.yappeer.domain.onboarding.security.UserAuthenticationService
 import com.yappeer.domain.onboarding.security.UserAuthenticationService.Companion.CLAIM_USER_ID
@@ -58,9 +57,6 @@ suspend fun Route.refreshTokenRoute(call: RoutingCall) {
         } else {
             call.respond(HttpStatusCode.Unauthorized)
         }
-    } catch (exception: ValueValidationException) {
-        logger.error("Error refreshing token", exception)
-        call.respond(HttpStatusCode.Unauthorized)
     } catch (e: JWTVerificationException) {
         logger.error("Error refreshing token", e)
         call.respond(HttpStatusCode.Unauthorized)

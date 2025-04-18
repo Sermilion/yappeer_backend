@@ -27,8 +27,7 @@ suspend fun Route.homePostsRoute(call: RoutingCall) {
     if (result != null) {
         call.respond(HttpStatusCode.OK, result.toUiModel())
     } else {
-        val message = "Failed to load posts."
-        logger.error(message)
-        call.respond(HttpStatusCode.InternalServerError, message)
+        logger.error("Failed to load posts.")
+        call.respond(HttpStatusCode.InternalServerError)
     }
 }

@@ -1,6 +1,5 @@
 package com.yappeer.presentation.routes.feature.onboarding
 
-import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
 import com.yappeer.domain.onboarding.security.UserAuthenticationService
 import com.yappeer.presentation.routes.model.param.LoginParams
@@ -25,24 +24,20 @@ suspend fun Route.loginRoute(call: RoutingCall) {
     val logger = LoggerFactory.getLogger(LOGIN_ROUTE)
     val params = call.receive<LoginParams>()
 
-    try {
-        val passwordHash = onboardingRepository
-            .findPassword(params.emailValue)
-            ?: return call.respond(HttpStatusCode.BadRequest, createInvalidCredentialsError())
-        val user = onboardingRepository.findUser(params.emailValue)
+    val passwordHash = onboardingRepository.findPassword(params.emailValue)
+        ?: return call.respond(HttpStatusCode.BadRequest, createInvalidCredentialsError())
 
-        val passwordMatches = userAuthenticationService.verifyPassword(params.passwordValue, passwordHash)
-        if (passwordMatches && user != null) {
-            val accessToken = userAuthenticationService.generateAccessToken(user.id)
-            val refreshToken = userAuthenticationService.generateRefreshToken(user.id)
-            val response = TokenUiModel(accessToken = accessToken, refreshToken = refreshToken)
-            onboardingRepository.updateLastLogin(user.id, Clock.System.now())
-            call.respond(HttpStatusCode.OK, response)
-        } else {
-            call.respond(HttpStatusCode.BadRequest, createInvalidCredentialsError())
-        }
-    } catch (e: ValueValidationException) {
-        logger.error("Validation error for value type ${e.valueType}", e)
+    val user = onboardingRepository.findUser(params.emailValue)
+
+    val passwordMatches = userAuthenticationService.verifyPassword(params.passwordValue, passwordHash)
+    if (passwordMatches && user != null) {
+        val accessToken = userAuthenticationService.generateAccessToken(user.id)
+        val refreshToken = userAuthenticationService.generateRefreshToken(user.id)
+        val response = TokenUiModel(accessToken = accessToken, refreshToken = refreshToken)
+        onboardingRepository.updateLastLogin(user.id, Clock.System.now())
+        call.respond(HttpStatusCode.OK, response)
+    } else {
+        logger.info("Invalid credentials for email: ${params.emailValue}.")
         call.respond(HttpStatusCode.BadRequest, createInvalidCredentialsError())
     }
 }

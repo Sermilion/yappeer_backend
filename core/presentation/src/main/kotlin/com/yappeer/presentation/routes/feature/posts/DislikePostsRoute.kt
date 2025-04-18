@@ -14,28 +14,27 @@ import java.util.UUID
 internal const val DISLIKE_POST_ROUTE = "/post/{postId}/dislike"
 
 suspend fun Route.dislikePostRoute(call: RoutingCall) {
-  val repository: PostsRepository by inject()
+    val repository: PostsRepository by inject()
 
-  val logger = LoggerFactory.getLogger(DISLIKE_POST_ROUTE)
-  val postId = call.parameters["postId"]?.let { UUID.fromString(it) }
-  val userId = call.getCurrentUserId()
+    val logger = LoggerFactory.getLogger(DISLIKE_POST_ROUTE)
+    val postId = call.parameters["postId"]?.let { UUID.fromString(it) }
+    val userId = call.getCurrentUserId()
 
-  if (postId == null || userId == null) {
-    call.respond(HttpStatusCode.BadRequest, "Invalid post ID")
-    return
-  }
+    if (postId == null || userId == null) {
+        call.respond(HttpStatusCode.BadRequest, "Invalid post ID")
+        return
+    }
 
-  val result = repository.likePost(
-    postId = postId,
-    userId = userId,
-    status = LikeStatus.Dislike,
-  )
+    val result = repository.likePost(
+        postId = postId,
+        userId = userId,
+        status = LikeStatus.Dislike,
+    )
 
-  if (result) {
-    call.respond(HttpStatusCode.OK)
-  } else {
-    val message = "Failed to dislike post."
-    logger.error(message)
-    call.respond(HttpStatusCode.InternalServerError, message)
-  }
+    if (result) {
+        call.respond(HttpStatusCode.OK)
+    } else {
+        logger.error("Failed to dislike post.")
+        call.respond(HttpStatusCode.InternalServerError)
+    }
 }

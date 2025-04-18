@@ -1,6 +1,5 @@
 package com.yappeer.presentation.routes.feature.profile
 
-import com.yappeer.domain.onboarding.model.value.ValueValidationException
 import com.yappeer.domain.onboarding.repository.OnboardingRepository
 import com.yappeer.presentation.routes.model.mapper.UserResponseMapper.toUiModel
 import io.ktor.http.HttpStatusCode
@@ -23,24 +22,17 @@ suspend fun Route.userProfileRoute(call: RoutingCall) {
         UUID.fromString(it)
     }
 
-    try {
-        if (userId != null) {
-            val result = onboardingRepository.findUser(userId)
+    if (userId != null) {
+        val result = onboardingRepository.findUser(userId)
 
-            if (result != null) {
-                val profile = result.toUiModel()
-                call.respond(HttpStatusCode.OK, profile)
-            } else {
-                call.respond(HttpStatusCode.NotFound)
-            }
+        if (result != null) {
+            val profile = result.toUiModel()
+            call.respond(HttpStatusCode.OK, profile)
         } else {
-            val message = "User not found."
-            logger.info(message)
-            call.respond(HttpStatusCode.NotFound, message)
+            call.respond(HttpStatusCode.NotFound)
         }
-    } catch (e: ValueValidationException) {
-        val message = "Validation error for value type ${e.valueType}"
-        logger.error(message, e)
-        call.respond(HttpStatusCode.BadRequest, message)
+    } else {
+        logger.info("User not found.")
+        call.respond(HttpStatusCode.NotFound)
     }
 }

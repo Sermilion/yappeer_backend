@@ -52,8 +52,7 @@ class YappeerSubscriptionsDataSource : SubscriptionsDataSource {
                 )
             }
         } catch (e: ExposedSQLException) {
-            val message = "Error fetching followers."
-            logger.error(message, e)
+            logger.error("Error fetching followers.", e)
             FollowersResult.Error
         }
     }
@@ -80,8 +79,7 @@ class YappeerSubscriptionsDataSource : SubscriptionsDataSource {
                 )
             }
         } catch (e: ExposedSQLException) {
-            val message = "Error fetching following."
-            logger.error(message, e)
+            logger.error("Error fetching following.", e)
             FollowersResult.Error
         }
     }
@@ -117,8 +115,7 @@ class YappeerSubscriptionsDataSource : SubscriptionsDataSource {
                 )
             }
         } catch (e: ExposedSQLException) {
-            val message = "Error fetching tags."
-            logger.error(message, e)
+            logger.error("Error fetching tags.", e)
             TagsResult.Error
         }
     }
@@ -164,8 +161,7 @@ class YappeerSubscriptionsDataSource : SubscriptionsDataSource {
                 )
             }
         } catch (e: ExposedSQLException) {
-            val message = "Error fetching communities."
-            logger.error(message, e)
+            logger.error("Error fetching communities.", e)
             null
         }
     }

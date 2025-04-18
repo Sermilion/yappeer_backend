@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.0.20"
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.yappeer.ktor.library)
     alias(libs.plugins.detekt)
     alias(libs.plugins.kover)
@@ -7,11 +7,6 @@ plugins {
 
 group = "com.yappeer"
 version = "0.0.1"
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
 
 kover {
     reports {
@@ -60,3 +55,5 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+// Kotlin JVM target is set in the root build.gradle.kts
