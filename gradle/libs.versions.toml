@@ -2,7 +2,7 @@
 agp = "8.5.2"
 detekt = "1.23.7"
 ktor_version="3.0.3"
-kotlin_version="2.0.20"
+kotlin_version="2.1.20"
 koin_version= "3.4.3"
 kotest = "5.9.1"
 ksp = "2.0.10-1.0.24"

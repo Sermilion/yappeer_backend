@@ -1,5 +1,5 @@
 package com.yappeer.domain.onboarding.model.value
 
 class ValueValidationException(
-    val valueType: String,
-) : Exception("Validation for value type $valueType failed.")
+    val value: Value,
+) : Exception("Validation for value type ${value.name} failed.")

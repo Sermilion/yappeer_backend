@@ -4,8 +4,6 @@ import com.yappeer.domain.posts.repository.PostsRepository
 import com.yappeer.presentation.common.getCurrentUserId
 import com.yappeer.presentation.routes.model.param.CreatePostParams
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -39,8 +37,7 @@ suspend fun Route.createPostRoute(call: RoutingCall) {
     if (result) {
         call.respond(HttpStatusCode.OK)
     } else {
-        val message = "Failed to create post."
-        logger.error(message)
-        call.respond(HttpStatusCode.InternalServerError, message)
+        logger.error("Failed to create post.")
+        call.respond(HttpStatusCode.InternalServerError)
     }
 }

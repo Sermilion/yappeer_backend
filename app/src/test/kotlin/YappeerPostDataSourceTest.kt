@@ -240,20 +240,20 @@ class YappeerPostDataSourceTest {
     }
 
     @Test
-    fun `updateLikeStats with LikeStatus Neutral from Like should decrease the likes counter`(){
+    fun `updateLikeStats with LikeStatus Neutral from Like should decrease the likes counter`() {
         val user = createUser("testuser", "test@test.com", "password")
         val now = Clock.System.now()
 
         createPost("Post 1", "Content 1", user, likes = 0, createdAt = now.minus(duration = 2.hours))
         val postId = transaction { PostDAO.all().first().id.value }
 
-        //Set status to Like
+        // Set status to Like
         val result1 = dataSource.updateLikeStats(postId, user.id.value, LikeStatus.Like)
         result1 shouldBe true
         val updatedPost1 = transaction { PostDAO.findById(postId)!! }
         updatedPost1.likes shouldBe 1
 
-        //Set Status to Neutral from like
+        // Set Status to Neutral from like
         val result2 = dataSource.updateLikeStats(postId, user.id.value, LikeStatus.Neutral)
         result2 shouldBe true
         val updatedPost = transaction { PostDAO.findById(postId)!! }

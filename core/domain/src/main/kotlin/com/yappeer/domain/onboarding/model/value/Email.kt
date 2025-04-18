@@ -1,12 +1,14 @@
 package com.yappeer.domain.onboarding.model.value
 
 @JvmInline
-value class Email(val value: String) {
+value class Email(val value: String) : Value {
+
+    override val errorMessage: String get() = "Email is invalid."
 
     init {
         val emailIsValid = value.isNotEmpty() && value.matches(Regex(pattern = EMAIL_PATTERN))
         if (!emailIsValid) {
-            throw ValueValidationException(Email::class.simpleName.orEmpty())
+            throw ValueValidationException(this)
         }
     }
 

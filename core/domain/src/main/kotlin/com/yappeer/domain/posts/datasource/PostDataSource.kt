@@ -13,5 +13,5 @@ interface PostDataSource {
         createdBy: UUID,
     ): Boolean
     fun homePosts(page: Int, pageSize: Int): PostsResult?
-    fun updateLikeStats(postId: UUID, userId: UUID, status: LikeStatus) : Boolean
+    fun updateLikeStats(postId: UUID, userId: UUID, status: LikeStatus): Boolean
 }
