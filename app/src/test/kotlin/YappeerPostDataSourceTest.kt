@@ -7,6 +7,7 @@ import com.yappeer.data.posts.datasource.db.dao.CommunityPostsDAO
 import com.yappeer.data.posts.datasource.db.dao.CommunityPostsTable
 import com.yappeer.data.posts.datasource.db.dao.PostDAO
 import com.yappeer.data.posts.datasource.db.dao.PostLikesDislikesTable
+import com.yappeer.data.posts.datasource.db.dao.PostMediaTable
 import com.yappeer.data.posts.datasource.db.dao.PostTable
 import com.yappeer.data.posts.datasource.db.dao.PostTagTable
 import com.yappeer.data.subscriptions.datasource.db.dao.TagDAO
@@ -16,6 +17,7 @@ import com.yappeer.data.subscriptions.datasource.db.dao.UserTagSubsTable
 import com.yappeer.domain.posts.model.LikeStatus
 import com.yappeer.domain.posts.model.Post
 import com.yappeer.domain.posts.model.PostsResult
+import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.runBlocking
@@ -24,6 +26,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -52,6 +55,7 @@ class YappeerPostDataSourceTest {
                 CommunityPostsTable,
                 UserCommunitySubsTable,
                 PostLikesDislikesTable,
+                PostMediaTable,
             )
         }
         dataSource = YappeerPostDataSource()
@@ -70,6 +74,7 @@ class YappeerPostDataSourceTest {
                 UserTagSubsTable,
                 UserCommunitySubsTable,
                 PostLikesDislikesTable,
+                PostMediaTable,
             )
         }
     }
@@ -126,7 +131,14 @@ class YappeerPostDataSourceTest {
 
         val user = createUser("testuser", "test@test.com", "password")
 
-        val result = dataSource.createPost(title, content, tags, user.id.value)
+        val result = dataSource.createPost(
+            title = title,
+            content = content,
+            tags = tags,
+            communityIds = emptyList(),
+            mediaUrls = emptyList(),
+            createdBy = user.id.value,
+        )
 
         // Verify the post was created and returned
         result.shouldBeInstanceOf<Post>()
@@ -134,6 +146,7 @@ class YappeerPostDataSourceTest {
         assertEquals(content, result.content)
         assertEquals(user.id.value, result.createdBy)
         assertEquals(3, result.tags.size)
+        assertEquals(0, result.mediaUrls.size)
 
         // Verify data in the database
         transaction(database) {
@@ -164,7 +177,14 @@ class YappeerPostDataSourceTest {
         }
 
         val tags = listOf(existingTagName, "newTag")
-        val result = dataSource.createPost(title, content, tags, user.id.value)
+        val result = dataSource.createPost(
+            title = title,
+            content = content,
+            tags = tags,
+            communityIds = emptyList(),
+            mediaUrls = emptyList(),
+            createdBy = user.id.value,
+        )
 
         // Verify the post was created and returned
         result.shouldBeInstanceOf<com.yappeer.domain.posts.model.Post>()
@@ -188,6 +208,95 @@ class YappeerPostDataSourceTest {
                 .map { TagDAO[it[PostTagTable.tagId]].name }
             assertEquals(tags.size, associatedTags.size) // Check association
             tags.forEach { tag -> assertTrue(associatedTags.contains(tag)) }
+        }
+    }
+
+    @Test
+    fun `createPost with communities creates correct associations`() {
+        val title = "Test Post with Communities"
+        val content = "Content for the community post"
+        val tags = listOf("tag1")
+
+        val user = createUser("testuser", "test@test.com", "password")
+        val community1 = createCommunity("community1", user)
+        val community2 = createCommunity("community2", user)
+
+        val communityIds = listOf(community1.id.value, community2.id.value)
+
+        val result = dataSource.createPost(
+            title = title,
+            content = content,
+            tags = tags,
+            communityIds = communityIds,
+            mediaUrls = emptyList(),
+            createdBy = user.id.value,
+        )
+
+        // Verify the post was created with correct communities
+        result.shouldBeInstanceOf<com.yappeer.domain.posts.model.Post>()
+        assertEquals(title, result.title)
+        assertEquals(content, result.content)
+        assertEquals(user.id.value, result.createdBy)
+        assertEquals(2, result.communities.size)
+
+        // Verify community associations in database
+        transaction {
+            val createdPost = PostDAO.all().firstOrNull()
+            val postId = createdPost?.id?.value!!
+
+            val associatedCommunities = CommunityPostsTable
+                .selectAll().where { CommunityPostsTable.postId eq postId }
+                .map { it[CommunityPostsTable.communityId].value }
+
+            assertEquals(2, associatedCommunities.size)
+            communityIds.forEach { communityId ->
+                assertTrue(associatedCommunities.contains(communityId))
+            }
+        }
+    }
+
+    @Test
+    fun `createPost with media URLs stores them correctly`() {
+        val title = "Test Post with Media"
+        val content = "Content with media attachments"
+        val tags = listOf("image", "media")
+
+        val user = createUser("testuser", "test@test.com", "password")
+        val mediaUrls = listOf(
+            "https://example.com/image1.jpg",
+            "https://example.com/image2.jpg",
+            "https://example.com/video.mp4",
+        )
+
+        val result = dataSource.createPost(
+            title = title,
+            content = content,
+            tags = tags,
+            communityIds = emptyList(),
+            mediaUrls = mediaUrls,
+            createdBy = user.id.value,
+        )
+
+        // Verify the post was created with media URLs
+        result.shouldBeInstanceOf<com.yappeer.domain.posts.model.Post>()
+        assertEquals(title, result.title)
+        assertEquals(content, result.content)
+        assertEquals(3, result.mediaUrls.size)
+        result.mediaUrls.shouldContainAll(mediaUrls)
+
+        // Verify media URLs in database
+        transaction {
+            val createdPost = PostDAO.all().firstOrNull()
+            val postId = createdPost?.id?.value!!
+
+            val storedMediaUrls = PostMediaTable
+                .selectAll().where { PostMediaTable.postId eq postId }
+                .map { it[PostMediaTable.mediaUrl] }
+
+            assertEquals(3, storedMediaUrls.size)
+            mediaUrls.forEach { url ->
+                assertTrue(storedMediaUrls.contains(url))
+            }
         }
     }
 
@@ -308,7 +417,14 @@ class YappeerPostDataSourceTest {
         val content = "This post tests tag follower counts"
         val tags = listOf("popular-tag", "new-tag")
 
-        val result = dataSource.createPost(title, content, tags, postCreator.id.value)
+        val result = dataSource.createPost(
+            title = title,
+            content = content,
+            tags = tags,
+            communityIds = emptyList(),
+            mediaUrls = emptyList(),
+            createdBy = postCreator.id.value,
+        )
 
         // Verify the post and tag details
         result.shouldBeInstanceOf<com.yappeer.domain.posts.model.Post>()
@@ -322,6 +438,51 @@ class YappeerPostDataSourceTest {
 
         assertEquals(2, popularTag?.followers)
         assertEquals(0, newTag?.followers)
+    }
+
+    @Test
+    fun `posts returned by userPosts include media URLs`() {
+        runBlocking {
+            // Given
+            val user = createUser("testuser", "test@test.com", "password")
+
+            // Create post with media URLs
+            val postId = transaction {
+                val post = PostDAO.new {
+                    this.title = "Post with Media"
+                    this.content = "Content with media attachments"
+                    this.createdBy = user.id
+                    this.createdAt = Clock.System.now().toJavaInstant()
+                    this.likes = 0
+                    this.dislikes = 0
+                    this.shares = 0
+                }
+
+                // Add media URLs to the post
+                val mediaUrls = listOf("https://example.com/image1.jpg", "https://example.com/video.mp4")
+                mediaUrls.forEach { url ->
+                    PostMediaTable.insert {
+                        it[PostMediaTable.postId] = post.id
+                        it[PostMediaTable.mediaUrl] = url
+                        it[PostMediaTable.createdAt] = Clock.System.now().toJavaInstant()
+                    }
+                }
+
+                post.id.value
+            }
+
+            // When
+            val result = dataSource.userPosts(userId = user.id.value, pageSize = 10, page = 1)
+
+            // Then
+            result.shouldBeInstanceOf<PostsResult>()
+            result.posts.size shouldBe 1
+            val resultPost = result.posts.first()
+            assertEquals(postId, resultPost.id)
+            assertEquals(2, resultPost.mediaUrls.size)
+            assertTrue(resultPost.mediaUrls.contains("https://example.com/image1.jpg"))
+            assertTrue(resultPost.mediaUrls.contains("https://example.com/video.mp4"))
+        }
     }
 
     private fun createUser(username: String, email: String, passwordHash: String): UserDAO =

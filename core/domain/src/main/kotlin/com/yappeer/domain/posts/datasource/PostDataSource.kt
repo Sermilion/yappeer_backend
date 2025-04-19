@@ -11,6 +11,8 @@ interface PostDataSource {
         title: String,
         content: String,
         tags: List<String>,
+        communityIds: List<UUID> = emptyList(),
+        mediaUrls: List<String> = emptyList(),
         createdBy: UUID,
     ): Post?
     fun homePosts(page: Int, pageSize: Int): PostsResult?

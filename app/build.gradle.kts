@@ -50,6 +50,7 @@ dependencies {
     testImplementation(libs.ktor.server.testhost)
     testImplementation("io.mockk:mockk:1.13.13")
     testImplementation(libs.ktor.serialization)
+    testImplementation(libs.koin.test)
 }
 
 tasks.test {

@@ -2,6 +2,7 @@ package com.yappeer.data.posts.repository
 
 import com.yappeer.domain.posts.datasource.PostDataSource
 import com.yappeer.domain.posts.model.LikeStatus
+import com.yappeer.domain.posts.model.Post
 import com.yappeer.domain.posts.model.PostsResult
 import com.yappeer.domain.posts.repository.PostsRepository
 import java.util.UUID
@@ -9,6 +10,7 @@ import java.util.UUID
 class YappeerPostsRepository(
     private val dataSource: PostDataSource,
 ) : PostsRepository {
+
     override fun userPosts(userId: UUID, page: Int, pageSize: Int): PostsResult? {
         return dataSource.userPosts(userId, page, pageSize)
     }
@@ -17,12 +19,16 @@ class YappeerPostsRepository(
         title: String,
         content: String,
         tags: List<String>,
+        communityIds: List<UUID>,
+        mediaUrls: List<String>,
         createdBy: UUID,
-    ): com.yappeer.domain.posts.model.Post? {
+    ): Post? {
         return dataSource.createPost(
             title = title,
             content = content,
             tags = tags,
+            communityIds = communityIds,
+            mediaUrls = mediaUrls,
             createdBy = createdBy,
         )
     }
