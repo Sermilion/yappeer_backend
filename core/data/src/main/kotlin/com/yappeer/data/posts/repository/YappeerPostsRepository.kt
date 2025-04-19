@@ -18,7 +18,7 @@ class YappeerPostsRepository(
         content: String,
         tags: List<String>,
         createdBy: UUID,
-    ): Boolean {
+    ): com.yappeer.domain.posts.model.Post? {
         return dataSource.createPost(
             title = title,
             content = content,

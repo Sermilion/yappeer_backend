@@ -8,13 +8,13 @@ import com.yappeer.data.posts.datasource.db.dao.CommunityPostsTable
 import com.yappeer.data.posts.datasource.db.dao.PostDAO
 import com.yappeer.data.posts.datasource.db.dao.PostLikesDislikesTable
 import com.yappeer.data.posts.datasource.db.dao.PostTable
-import com.yappeer.data.posts.datasource.db.dao.PostTagDAO
 import com.yappeer.data.posts.datasource.db.dao.PostTagTable
 import com.yappeer.data.subscriptions.datasource.db.dao.TagDAO
 import com.yappeer.data.subscriptions.datasource.db.dao.TagTable
 import com.yappeer.data.subscriptions.datasource.db.dao.UserCommunitySubsTable
 import com.yappeer.data.subscriptions.datasource.db.dao.UserTagSubsTable
 import com.yappeer.domain.posts.model.LikeStatus
+import com.yappeer.domain.posts.model.Post
 import com.yappeer.domain.posts.model.PostsResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -24,6 +24,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterEach
@@ -127,8 +128,14 @@ class YappeerPostDataSourceTest {
 
         val result = dataSource.createPost(title, content, tags, user.id.value)
 
-        assertTrue(result)
+        // Verify the post was created and returned
+        result.shouldBeInstanceOf<Post>()
+        assertEquals(title, result.title)
+        assertEquals(content, result.content)
+        assertEquals(user.id.value, result.createdBy)
+        assertEquals(3, result.tags.size)
 
+        // Verify data in the database
         transaction(database) {
             val createdPost = PostDAO.all().firstOrNull()
             assertEquals(title, createdPost?.title)
@@ -158,7 +165,18 @@ class YappeerPostDataSourceTest {
 
         val tags = listOf(existingTagName, "newTag")
         val result = dataSource.createPost(title, content, tags, user.id.value)
-        assertTrue(result)
+
+        // Verify the post was created and returned
+        result.shouldBeInstanceOf<com.yappeer.domain.posts.model.Post>()
+        assertEquals(title, result.title)
+        assertEquals(content, result.content)
+        assertEquals(user.id.value, result.createdBy)
+        assertEquals(2, result.tags.size)
+
+        // Verify tags are correct
+        val resultTagNames = result.tags.map { it.name }
+        assertTrue(resultTagNames.contains(existingTagName))
+        assertTrue(resultTagNames.contains("newTag"))
 
         transaction {
             val numTags = TagDAO.all().count()
@@ -261,6 +279,51 @@ class YappeerPostDataSourceTest {
         updatedPost.dislikes shouldBe 0
     }
 
+    @Test
+    fun `createPost returns post with accurate tag follower counts`() {
+        // Create users
+        val postCreator = createUser("postuser", "post@test.com", "password")
+        val follower1 = createUser("follower1", "follower1@test.com", "password")
+        val follower2 = createUser("follower2", "follower2@test.com", "password")
+
+        // Create tags with followers
+        val tag1 = createTag("popular-tag")
+        val tag2 = createTag("new-tag") // No followers
+
+        // Set up followers for tag1
+        transaction {
+            UserTagSubsTable.insert {
+                it[userId] = follower1.id.value
+                it[tagId] = tag1.id.value
+            }
+
+            UserTagSubsTable.insert {
+                it[userId] = follower2.id.value
+                it[tagId] = tag1.id.value
+            }
+        }
+
+        // Create post with both tags
+        val title = "Follower Count Test Post"
+        val content = "This post tests tag follower counts"
+        val tags = listOf("popular-tag", "new-tag")
+
+        val result = dataSource.createPost(title, content, tags, postCreator.id.value)
+
+        // Verify the post and tag details
+        result.shouldBeInstanceOf<com.yappeer.domain.posts.model.Post>()
+        assertEquals(title, result.title)
+        assertEquals(content, result.content)
+        assertEquals(2, result.tags.size)
+
+        // Check the follower counts on tags
+        val popularTag = result.tags.find { it.name == "popular-tag" }
+        val newTag = result.tags.find { it.name == "new-tag" }
+
+        assertEquals(2, popularTag?.followers)
+        assertEquals(0, newTag?.followers)
+    }
+
     private fun createUser(username: String, email: String, passwordHash: String): UserDAO =
         transaction(database) {
             UserDAO.new {
@@ -331,9 +394,9 @@ class YappeerPostDataSourceTest {
     }
 
     private fun createPostTag(post: PostDAO, tag: TagDAO) = transaction(database) {
-        PostTagDAO.new {
-            this.postId = post.id
-            this.tagId = tag.id
+        PostTagTable.insert {
+            it[postId] = post.id
+            it[tagId] = tag.id
         }
     }
 }

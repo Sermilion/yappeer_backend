@@ -2,6 +2,7 @@ package com.yappeer.presentation.routes.feature.posts
 
 import com.yappeer.domain.posts.repository.PostsRepository
 import com.yappeer.presentation.common.getCurrentUserId
+import com.yappeer.presentation.routes.model.mapper.PostMapper.toUiModel
 import com.yappeer.presentation.routes.model.param.CreatePostParams
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
@@ -27,15 +28,15 @@ suspend fun Route.createPostRoute(call: RoutingCall) {
 
     val logger = LoggerFactory.getLogger(CREATE_POST_ROUTE)
 
-    val result = repository.createPost(
+    val post = repository.createPost(
         title = params.title,
         content = params.content,
         tags = params.tags,
         createdBy = userId,
     )
 
-    if (result) {
-        call.respond(HttpStatusCode.OK)
+    if (post != null) {
+        call.respond(HttpStatusCode.Created, post.toUiModel())
     } else {
         logger.error("Failed to create post.")
         call.respond(HttpStatusCode.InternalServerError)
