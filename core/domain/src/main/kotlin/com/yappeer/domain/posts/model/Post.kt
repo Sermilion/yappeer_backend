@@ -17,4 +17,5 @@ data class Post(
     val communities: List<Community>,
     val shares: Int = 0,
     val tags: List<Tag>,
+    val mediaUrls: List<String> = emptyList(),
 )

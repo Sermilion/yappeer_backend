@@ -3,6 +3,7 @@ package com.yappeer
 import com.yappeer.di.configureDi
 import com.yappeer.presentation.plugins.configureDatabases
 import com.yappeer.presentation.plugins.configureMonitoring
+import com.yappeer.presentation.plugins.configureRateLimiting
 import com.yappeer.presentation.plugins.configureRouting
 import com.yappeer.presentation.plugins.configureSerialization
 import io.ktor.server.application.Application
@@ -16,6 +17,7 @@ fun Application.module() {
     configureDi()
     configureSerialization()
     configureMonitoring()
+    configureRateLimiting()
     configureRouting()
     configureDatabases()
 }

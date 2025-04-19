@@ -31,6 +31,7 @@ jsonpath = { group = "com.jayway.jsonpath", name = "json-path", version = "2.9.0
 h2 = { group = "com.h2database", name = "h2", version.ref = "h2_version" }
 
 koin-ktor = { group = "io.insert-koin", name = "koin-ktor", version.ref = "koin_version" }
+koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin_version"}
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-assertions-json = { module = "io.kotest:kotest-assertions-json", version.ref = "kotest" }
 

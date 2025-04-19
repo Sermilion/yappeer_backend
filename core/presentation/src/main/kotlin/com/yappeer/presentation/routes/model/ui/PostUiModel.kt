@@ -16,4 +16,5 @@ data class PostUiModel(
     val communityIds: List<CommunityUiModel>,
     val shares: Int = 0,
     val tags: List<TagUiModel>,
+    val mediaUrls: List<String> = emptyList(),
 )

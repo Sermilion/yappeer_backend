@@ -12,6 +12,7 @@ object PostsMapper {
     fun PostDAO.toDomainModel(
         communities: List<Community>,
         tags: List<Tag>,
+        mediaUrls: List<String> = emptyList(),
     ): Post {
         return Post(
             id = this.id.value,
@@ -25,6 +26,7 @@ object PostsMapper {
             shares = this.shares,
             communities = communities,
             tags = tags,
+            mediaUrls = mediaUrls,
         )
     }
 

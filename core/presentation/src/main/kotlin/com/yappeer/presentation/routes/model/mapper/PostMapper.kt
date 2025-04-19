@@ -35,6 +35,7 @@ object PostMapper {
             communityIds = communities.map { it.toUiModel() },
             shares = shares,
             tags = tags.map { it.toUiModel() },
+            mediaUrls = mediaUrls,
         )
     }
 
