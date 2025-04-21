@@ -7,6 +7,7 @@ koin_version= "3.4.3"
 kotest = "5.9.1"
 ksp = "2.0.10-1.0.24"
 logback_version="1.5.8"
+mockk = "1.13.17"
 postgres_version="42.7.4"
 h2_version="2.3.232"
 exposedVersion="0.55.0"
@@ -49,11 +50,17 @@ ktor-server-openapi = { group = "io.ktor", name = "ktor-server-openapi", version
 ktor-server-resources = { group = "io.ktor", name = "ktor-server-resources", version.ref = "ktor_version" }
 ktor-server-statuspage = { group = "io.ktor", name = "ktor-server-status-pages", version.ref = "ktor_version" }
 ktor-server-testhost = { group = "io.ktor", name = "ktor-server-test-host", version.ref = "ktor_version" }
+ktor-server-compression = { group = "io.ktor", name = "ktor-server-compression", version.ref = "ktor_version" }
+ktor-server-forwardedheaders = { group = "io.ktor", name = "ktor-server-forwarded-header", version.ref = "ktor_version" }
+ktor-server-partialcontent = { group = "io.ktor", name = "ktor-server-partial-content", version.ref = "ktor_version" }
+ktor-server-hsts = { group = "io.ktor", name = "ktor-server-hsts", version.ref = "ktor_version" }
 ktor-server-testhotsjvm = { group = "io.ktor", name = "ktor-server-test-host-jvm" }
 
 postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgres_version" }
 
 logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback_version" }
+
+mockk-core = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }

@@ -6,4 +6,6 @@ import kotlinx.serialization.Serializable
 data class TokenUiModel(
     val accessToken: String,
     val refreshToken: String,
+    val expiresIn: Long = 3600,
+    val tokenType: String = "Bearer",
 )

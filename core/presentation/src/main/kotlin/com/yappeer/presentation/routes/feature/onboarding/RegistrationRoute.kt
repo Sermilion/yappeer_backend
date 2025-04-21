@@ -38,7 +38,7 @@ suspend fun Route.registrationRoute(call: RoutingCall) {
 
         is RegistrationResult.Error -> {
             when (result.errorType) {
-                RegistrationErrorType.UsernameOrEmailTaken -> call.respond(
+                RegistrationErrorType.UsernameTaken -> call.respond(
                     status = HttpStatusCode.Conflict,
                     message = ErrorResponse(
                         code = ERROR_USERNAME_OR_EMAIL_EXISTS,
