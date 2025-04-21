@@ -1,7 +1,9 @@
 package com.yappeer.presentation.plugins
 
 import com.yappeer.presentation.common.getCurrentUserId
+import com.yappeer.presentation.routes.feature.onboarding.LOGIN_ROUTE
 import com.yappeer.presentation.routes.feature.posts.CREATE_POST_ROUTE
+import com.yappeer.presentation.routes.model.result.ErrorDetail
 import com.yappeer.presentation.routes.model.result.ErrorResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -11,6 +13,7 @@ import io.ktor.server.application.BaseApplicationPlugin
 import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.plugins.origin
+import io.ktor.server.request.ApplicationRequest
 import io.ktor.server.request.path
 import io.ktor.server.response.respond
 import io.ktor.util.AttributeKey
@@ -19,6 +22,8 @@ import kotlinx.coroutines.sync.withLock
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 class RateLimitingConfiguration {
     val limits = mutableMapOf<String, RateLimitConfig>()
@@ -80,7 +85,8 @@ class RateLimiting(config: RateLimitingConfiguration) {
                     HttpStatusCode.TooManyRequests,
                     ErrorResponse(
                         code = "RATE_LIMIT_EXCEEDED",
-                        message = "Rate limit exceeded. Try again in $retryAfterSecs seconds.",
+                        details = listOf(ErrorDetail("request", "Rate limit exceeded")),
+                        message = "Too many requests. Try again in $retryAfterSecs seconds.",
                     ),
                 )
 
@@ -119,10 +125,35 @@ class RateLimiting(config: RateLimitingConfiguration) {
     }
 }
 
+/**
+ * Gets a more reliable client identifier by considering multiple headers and IP
+ */
+private fun ApplicationRequest.getClientIdentifier(): String {
+    val forwardedFor = this.headers["X-Forwarded-For"]
+    val realIp = this.headers["X-Real-IP"]
+    return forwardedFor ?: realIp ?: this.origin.remoteHost
+}
+
 fun Application.configureRateLimiting() {
     install(RateLimiting) {
-        rateLimit(CREATE_POST_ROUTE, limit = 5, period = Duration.ofMinutes(1)) { call ->
-            call.getCurrentUserId()?.toString() ?: call.request.origin.remoteHost
+        // Rate limit for login attempts - more strict
+        rateLimit(
+            path = LOGIN_ROUTE,
+            limit = 10,
+            period = 5.minutes.toJavaDuration(),
+        ) { call ->
+            // For login, we use IP-based limiting
+            call.request.getClientIdentifier()
+        }
+
+        // Rate limit for post creation
+        rateLimit(
+            path = CREATE_POST_ROUTE,
+            limit = 5,
+            period = Duration.ofMinutes(1),
+        ) { call ->
+            // For authenticated endpoints, use user ID if available
+            call.getCurrentUserId()?.toString() ?: call.request.getClientIdentifier()
         }
 
         // Add more rate limits for other routes as needed

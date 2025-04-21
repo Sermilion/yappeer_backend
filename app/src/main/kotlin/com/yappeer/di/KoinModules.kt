@@ -25,15 +25,23 @@ import org.koin.ktor.plugin.Koin
 
 fun Application.configureDi() {
     val appModule = module {
-        single<EnvironmentConfigProvider> { YappeerEnvironmentConfigProvider(jwtTokenService = get()) }
-        single<UserDataSource> { YappeerUserDataSource() }
-        single<OnboardingRepository> { YappeerOnboardingRepository(dataSource = get()) }
-        single<UserAuthenticationService> { YappeerUserAuthenticationService(configProvider = get()) }
+        // Security services
         single<JwtTokenService> { YappeerJwtTokenService() }
+
+        // Config providers
+        single<EnvironmentConfigProvider> { YappeerEnvironmentConfigProvider(jwtTokenService = get()) }
+
+        // Repositories and data sources
         single<SubscriptionsDataSource> { YappeerSubscriptionsDataSource() }
         single<SubscriptionsRepository> { YappeerSubscriptionsRepository(dataSource = get()) }
         single<PostDataSource> { YappeerPostDataSource() }
         single<PostsRepository> { YappeerPostsRepository(dataSource = get()) }
+
+        single<UserDataSource> { YappeerUserDataSource() }
+        single<OnboardingRepository> { YappeerOnboardingRepository(dataSource = get()) }
+        single<UserAuthenticationService> {
+            YappeerUserAuthenticationService(jwtTokenService = get())
+        }
     }
 
     install(Koin) { modules(appModule) }

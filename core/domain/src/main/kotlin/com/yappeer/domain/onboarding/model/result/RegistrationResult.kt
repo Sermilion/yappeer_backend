@@ -7,7 +7,7 @@ sealed interface RegistrationResult {
     data class Success(val user: User) : RegistrationResult
 
     sealed interface RegistrationErrorType {
-        data object UsernameOrEmailTaken : RegistrationErrorType
-        data object UnknownError : RegistrationErrorType
+        data object UsernameTaken : RegistrationErrorType
+        data object EmailTaken : RegistrationErrorType
     }
 }
