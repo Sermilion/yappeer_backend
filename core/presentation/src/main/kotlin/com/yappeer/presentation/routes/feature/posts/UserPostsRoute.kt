@@ -12,7 +12,7 @@ import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-internal const val USER_POSTS_ROUTE = "/user_posts"
+internal const val USER_POSTS_ROUTE = "/me/posts"
 
 suspend fun Route.userPostsRoute(call: RoutingCall) {
     val repository: PostsRepository by inject()

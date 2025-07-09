@@ -12,7 +12,7 @@ import io.ktor.server.routing.RoutingCall
 import org.koin.ktor.ext.inject
 import java.util.UUID
 
-internal const val FOLLOWING_ROUTE = "/following"
+internal const val FOLLOWING_ROUTE = "/me/following"
 
 suspend fun Route.followingRoute(call: RoutingCall) {
     val repository: SubscriptionsRepository by inject()

@@ -53,14 +53,14 @@ fun Application.configureRouting() {
             get(USER_PROFILE_ROUTE) { userProfileRoute(call) }
             get(SELF_PROFILE_ROUTE) { selfProfileRoute(call) }
 
-            post(FOLLOWERS_ROUTE) { followersRoute(call) }
-            post(FOLLOWING_ROUTE) { followingRoute(call) }
-            post(TAGS_ROUTE) { tagsRoute(call) }
-            post(COMMUNITIES_ROUTE) { communitiesRoute(call) }
-            post(USER_POSTS_ROUTE) { userPostsRoute(call) }
+            get(FOLLOWERS_ROUTE) { followersRoute(call) }
+            get(FOLLOWING_ROUTE) { followingRoute(call) }
+            get(TAGS_ROUTE) { tagsRoute(call) }
+            get(COMMUNITIES_ROUTE) { communitiesRoute(call) }
+            get(USER_POSTS_ROUTE) { userPostsRoute(call) }
 
             post(CREATE_POST_ROUTE) { createPostRoute(call) }
-            post(HOME_POSTS_ROUTE) { homePostsRoute(call) }
+            get(HOME_POSTS_ROUTE) { homePostsRoute(call) }
             post(LIKE_POST_ROUTE) { likePostRoute(call) }
             post(DISLIKE_POST_ROUTE) { dislikePostRoute(call) }
             // read post

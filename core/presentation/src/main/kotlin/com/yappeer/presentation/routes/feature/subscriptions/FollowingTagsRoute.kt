@@ -12,7 +12,7 @@ import io.ktor.server.routing.RoutingCall
 import org.koin.ktor.ext.inject
 import java.util.UUID
 
-internal const val TAGS_ROUTE = "/tags"
+internal const val TAGS_ROUTE = "/me/tags"
 
 suspend fun Route.tagsRoute(call: RoutingCall) {
     val repository: SubscriptionsRepository by inject()

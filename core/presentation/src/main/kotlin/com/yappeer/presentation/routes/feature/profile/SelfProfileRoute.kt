@@ -10,7 +10,7 @@ import io.ktor.server.routing.RoutingCall
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 
-internal const val SELF_PROFILE_ROUTE = "/self_profile"
+internal const val SELF_PROFILE_ROUTE = "/me/profile"
 
 suspend fun Route.selfProfileRoute(call: RoutingCall) {
     val onboardingRepository: OnboardingRepository by inject()

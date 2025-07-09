@@ -17,7 +17,7 @@ import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-const val CREATE_POST_ROUTE = "/create_post"
+const val CREATE_POST_ROUTE = "/post"
 
 // Validation constants
 private const val MAX_TITLE_LENGTH = 200

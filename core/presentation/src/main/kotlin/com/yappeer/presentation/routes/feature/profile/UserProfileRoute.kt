@@ -10,7 +10,7 @@ import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-internal const val USER_PROFILE_ROUTE = "/user_profile"
+internal const val USER_PROFILE_ROUTE = "/user/profile"
 private const val USER_ID_PARAM = "user_id"
 
 suspend fun Route.userProfileRoute(call: RoutingCall) {

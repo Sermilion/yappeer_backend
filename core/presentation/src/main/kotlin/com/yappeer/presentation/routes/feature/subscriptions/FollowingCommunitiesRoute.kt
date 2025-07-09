@@ -11,7 +11,7 @@ import io.ktor.server.routing.RoutingCall
 import org.koin.ktor.ext.inject
 import java.util.UUID
 
-internal const val COMMUNITIES_ROUTE = "/communities"
+internal const val COMMUNITIES_ROUTE = "/me/communities"
 
 suspend fun Route.communitiesRoute(call: RoutingCall) {
     val repository: SubscriptionsRepository by inject()
