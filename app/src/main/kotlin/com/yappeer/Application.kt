@@ -1,7 +1,7 @@
 package com.yappeer
 
 import com.yappeer.di.configureDi
-import com.yappeer.presentation.plugins.configureDatabases
+import com.yappeer.data.plugins.configureDatabases
 import com.yappeer.presentation.plugins.configureMonitoring
 import com.yappeer.presentation.plugins.configureRateLimiting
 import com.yappeer.presentation.plugins.configureRouting
